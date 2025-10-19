@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navMenu = document.getElementById('menu');
 
     menuToggle.addEventListener('click', () => {
-        menu.classList.toggle("hidden");
+        navMenu.classList.toggle("show");
     });
 
     // Highlight the current page link

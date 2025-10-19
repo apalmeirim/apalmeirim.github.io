@@ -55,12 +55,20 @@ nav {
   top: 60px;
   right: 20px;
   background: black;
-  border: 1px solid #0077ff;
-  padding: 15px;
+  border: 1px solid #00ff66;
+  padding: 10px;
+  transform: scaleY(0);      /* collapsed vertically */
+  transform-origin: top;
+  opacity: 0;
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+  pointer-events: none; /* disable interactions when hidden */
 }
-nav.hidden {
-  display: none;
+nav.show {
+  transform: scaleY(1);
+  opacity: 1;
+  pointer-events: auto; /* enable interactions when shown */
 }
+
 nav ul {
   list-style: none;
   display: flex;
@@ -73,7 +81,7 @@ nav a {
   font-family: 'Press Start 2P', cursive;
   padding: 3px 6px;
   border-radius: 3px;
-  transition: all 0.3s ease;s
+  transition: all 0.3s ease;
 }
 nav a:hover {
   color: #ffffff; /* bright white */
