@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Me - portfolio</title>
+    <title>_contacts</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -32,12 +32,23 @@
 
 
     <main>
-        <h1>Contact</h1>
-        <p>Email me at: <a href="mailto:a.palmeirim03@gmail.com">a.palmeirim03@gmail.com</a></p>
+    <h1>Contact</h1>
+
+    <!-- Canvas container for Matter.js world -->
+    <div class="contact-canvas-wrap">
+      <canvas id="world"></canvas>
+    </div>
+
+    <p class="hint">Drag the blocks — throw them — or click a block to open the contact link.</p>
     </main>
 
     <footer>
         <p>&copy; 2025 Antonio Palmeirim</p>
     </footer>
+
+    <!-- local Matter.js (self-hosted) -->
+    <script src="js/lib/matter.min.js"></script>
+    <!-- your contact physics script -->
+    <script src="js/contact.js" defer></script>
 </body>
 </html>
