@@ -34,7 +34,7 @@
     <main>
     <h1>Contact</h1>
 
-    <!-- Canvas container for Matter.js world -->
+    <!-- canvas container for matter.js world -->
     <div class="contact-canvas-wrap">
       <canvas id="world"></canvas>
     </div>
@@ -46,7 +46,9 @@
     <div id="popup" class="popup hidden">
     <div class="popup-content">
         <p id="popupText"></p>
+        <div id="popupButtons">
         <button id="closePopup">CLOSE</button>
+    </div>
     </div>
     </div>
     </main>
@@ -55,7 +57,7 @@
         <p>&copy; 2025 Antonio Palmeirim</p>
     </footer>
 
-    <!-- local Matter.js (self-hosted) -->
+    <!-- local matter.js (self-hosted) -->
     <script src="js/lib/matter.min.js"></script>
     <!-- your contact physics script -->
     <script src="js/contact.js" defer></script>

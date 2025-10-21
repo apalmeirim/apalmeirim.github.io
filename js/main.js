@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navMenu.classList.toggle("show");
     });
 
-    // Highlight the current page link
+    // highlight the current page link
     const links = document.querySelectorAll("nav a");
 
     // get current filename (e.g. "about.html")

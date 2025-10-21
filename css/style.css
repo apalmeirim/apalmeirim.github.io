@@ -12,24 +12,24 @@
     font-style: normal;
 }
 
-/* Global reset */
+/* global reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body styling */
+/* body styling */
 body {
-    font-family: VT323, monospace; /* Monospace font for retro look */
-    background-color: #f8f6f1; /* Light beige background */
+    font-family: VT323, monospace; /* monospace font for retro look */
+    background-color: #f8f6f1; /* light beige background */
     color: #222;
     line-height: 1.6;
     padding: 20px;
     text-align: center;
 }
 
-/* Navigation bar */
+/* navigation bar */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -49,7 +49,7 @@ body {
   background-color: #0077ff;
 }
 
-/* Hidden menu */
+/* hidden menu */
 nav {
   position: absolute;
   top: 60px;
@@ -91,7 +91,7 @@ nav a:hover {
   box-shadow: 0 0 8px #00ff66;
 }
 
-/* Active: highlight current page */
+/* active: highlight current page */
 nav a.active {
   color: #2ddd50; /* neon pink */
   background: black;
@@ -101,7 +101,7 @@ nav a.active {
   box-shadow: 0 0 6px #2ab23e;
 }
 
-/* Back Button */
+/* back button */
 .back-btn {
   font-family: 'Press Start 2P', cursive;
   background: none;
@@ -115,9 +115,9 @@ nav a.active {
   color: black;
 }
 
-/* Headings */
+/* headings */
 h1 {
-    font-family: 'Press Start 2P', cursive; /* Pixelated font for headings */
+    font-family: 'Press Start 2P', cursive; /* pixelated font for headings */
     font-size: 18px;
     margin-bottom: 20px;
 }
@@ -128,7 +128,7 @@ h2 {
     margin: 40px 0 20px;
 }
 
-/* Contact page canvas style */
+/* contact page canvas style */
 
 .contact-canvas-wrap {
   width: 100%;
@@ -137,7 +137,7 @@ h2 {
   margin: 12px 0 24px;
 }
 
-/* The visible canvas */
+/* the visible canvas */
 #world {
   display: block;
   background: #000; /* or whatever color */
@@ -168,7 +168,7 @@ h2 {
   color: black;
 }
 
-/* Popup overlay */
+/* popup overlay */
 .popup {
   position: fixed;
   top: 0;
@@ -182,12 +182,12 @@ h2 {
   z-index: 100;
 }
 
-/* Hidden state */
+/* hidden state */
 .popup.hidden {
   display: none;
 }
 
-/* Popup box */
+/* popup box */
 .popup-content {
   background: #000;
   border: 3px solid #00ff66;
@@ -204,31 +204,45 @@ h2 {
   animation: popupFadeIn 0.2s ease-out;
 }
 
-/* Close button */
-#closePopup {
+/* popup buttons */
+#popupButtons {
+  display: flex;
+  justify-content: center;
+  gap: 24px; /* spacing between buttons */
+  margin-top: 30px;
+}
+
+/* button style */
+#popupButtons button {
   background: none;
-  border: 1px solid #00ff66;
+  border: 2px solid #00ff66;
   color: #00ff66;
   font-family: 'Press Start 2P', cursive;
-  font-size: 10px;
-  margin-top: 10px;
-  padding: 6px 10px;
+  font-size: 12px;
+  padding: 12px 24px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
+  border-radius: 6px;
+  box-shadow: 0 0 10px #00ff66 inset;
 }
 
-#closePopup:hover {
+/* hover + active */
+#popupButtons button:hover {
   background: #00ff66;
   color: black;
+  box-shadow: 0 0 12px #00ff66;
 }
 
+#popupButtons button:active {
+  transform: scale(0.96);
+}
 
-/* Sections */
+/* sections */
 section {
     margin-bottom: 60px;
 }
 
-/* Footer */
+/* footer */
 footer {
     margin-top: 60px;
     font-size: 14px;

@@ -25,7 +25,7 @@ const render = Render.create({
 
 //  120hz simulation
 const runner = Runner.create({
-  delta: 1000 / 120  // simulate 120 Hz instead of 60 Hz
+  delta: 1000 / 120  // simulate 120 hz instead of 60 hz
 });
 Render.run(render);
 Runner.run(runner, engine);
@@ -41,12 +41,14 @@ World.add(engine.world, mouseConstraint);
 // link mouse to renderer for correct coordinates
 render.mouse = mouse;
 
+// world creation
 const ground = Bodies.rectangle(WIDTH / 2, HEIGHT + 20, WIDTH, 40, { isStatic: true });
 const leftWall = Bodies.rectangle(-20, HEIGHT / 2, 40, HEIGHT, { isStatic: true });
 const rightWall = Bodies.rectangle(WIDTH + 20, HEIGHT / 2, 40, HEIGHT, { isStatic: true });
 const ceiling = Bodies.rectangle(WIDTH / 2, -20, WIDTH, 40, { isStatic: true });
 World.add(engine.world, [ground, ceiling, leftWall, rightWall]);
 
+// self explanatory >_<
 const CONTACTS = [
   { label: "Email",  icon: "assets/images/email_icon.png",  link: "mailto:a.palmeirim03@gmail.com" },
   { label: "Phone",  icon: "assets/images/phone_icon.png",  link: "+351925307378" },
@@ -75,11 +77,15 @@ function createBlocks() {
   CONTACTS.forEach(c => {
     const size = 100;
     const posX = Math.random() * (WIDTH - size * 2) + size;
-    const posY = Math.random() * 200 + 50; // random height between 50–250
+    const posY = Math.random() * 200 + 50;
     const box = Bodies.rectangle(posX, posY, size, size, {
       restitution: 0.6,
       frictionAir: 0.02,
-      render: { fillStyle: "#edccccff", strokeStyle: "#000000ff", lineWidth: 2 }
+      render: { 
+        fillStyle: "#edccccff", 
+        strokeStyle: "#000000ff",  // was strokestyle
+        lineWidth: 2              // was linewidth
+      }
     });
     box.contact = c;
     World.add(engine.world, box);
@@ -190,11 +196,13 @@ canvas.addEventListener("mouseup", e => {
 
     if (clicked && clicked.contact) {
       if (clicked.contact.label === "Phone") {
-        showPopup("📞 +351 925 307 378");
+        showPopup("phone", "📞 +351 925 307 378");
+      } else if (clicked.contact.label === "Email") {
+        showPopup("email", "a.palmeirim03@gmail.com");
       } else if (clicked.contact.link) {
         window.open(clicked.contact.link, "_blank");
       }
-  }
+     }
     }
 });
 
@@ -272,7 +280,7 @@ Events.on(engine, "afterUpdate", () => {
 });
 
 // ghosting prevention
-
+// future fix :d
 
 // gravity toggle
 const gravityBtn = document.getElementById("gravityBtn");
@@ -306,23 +314,52 @@ updateGravityButton(); // initialize button state
 // phone popup
 const popup = document.getElementById("popup");
 const popupText = document.getElementById("popupText");
+const popupButtons = document.getElementById("popupButtons");
 const closePopup = document.getElementById("closePopup");
 
-function showPopup(text) {
+function showPopup(type, text) {
   popupText.textContent = text;
   popup.classList.remove("hidden");
+
+
+  // button reset
+  popupButtons.innerHTML = '';
+
+  // always add close button
+  const closeBtn = document.createElement('button');
+  closeBtn.id = "closePopup";
+  closeBtn.textContent = "CLOSE";
+  closeBtn.onclick = () => popup.classList.add("hidden");
+  popupButtons.appendChild(closeBtn);
+
+  // add special copy button for email popups
+  if (type === "email") {
+    const copyBtn = document.createElement("button");
+    copyBtn.textContent = "COPY";
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = "COPIED!";
+        copyBtn.style.background = "#00ff66";
+        copyBtn.style.color = "black";
+        setTimeout(() => {
+          copyBtn.textContent = "COPY";
+          copyBtn.style.background = "none";
+          copyBtn.style.color = "#00ff66";
+        }, 1200);
+      } catch (err) {
+        copyBtn.textContent = "FAILED";
+        console.error("Clipboard error:", err);
+      }
+    });
+    popupButtons.appendChild(copyBtn);
+  }
 }
 
-closePopup.addEventListener("click", () => {
-  popup.classList.add("hidden");
-});
-
-// optional: close on overlay click
+// close when clicking the dark background
 popup.addEventListener("click", e => {
   if (e.target === popup) popup.classList.add("hidden");
 });
-
-
 
 //  init
 preloadImages(() => {
