@@ -1,40 +1,35 @@
 @font-face {
-    font-family: 'Press Start 2P';
-    src: url('../assets/fonts/PressStart2P-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'Press Start 2P';
+  src: url('../assets/fonts/PressStart2P-Regular.ttf') format('truetype');
 }
-
 @font-face {
-    font-family: 'VT323';
-    src: url('../assets/fonts/VT323-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'VT323';
+  src: url('../assets/fonts/VT323-Regular.ttf') format('truetype');
 }
 
 /* global reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* body styling */
 body {
-    font-family: VT323, monospace; /* monospace font for retro look */
-    background-color: #f8f6f1; /* light beige background */
-    color: #222;
-    line-height: 1.6;
-    padding: 20px;
-    text-align: center;
+  font-family: VT323, monospace;
+  background-color: #f8f6f1;
+  color: #333;
+  line-height: 1.6;
+  padding: 20px;
+  text-align: center;
 }
 
 /* navigation bar */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
 }
 
 .menu-toggle {
@@ -46,7 +41,7 @@ body {
 .menu-toggle div {
   width: 25px;
   height: 3px;
-  background-color: #0077ff;
+  background-color: #7ab69d;
 }
 
 /* hidden menu */
@@ -54,19 +49,19 @@ nav {
   position: absolute;
   top: 60px;
   right: 20px;
-  background: black;
-  border: 1px solid #00ff66;
+  background: #fefefe;
+  border: 1px solid #b6e2d3;
   padding: 10px;
-  transform: scaleY(0);      /* collapsed vertically */
+  transform: scaleY(0);
   transform-origin: top;
   opacity: 0;
   transition: transform 0.2s ease-out, opacity 0.2s ease-out;
-  pointer-events: none; /* disable interactions when hidden */
+  pointer-events: none;
 }
 nav.show {
   transform: scaleY(1);
   opacity: 1;
-  pointer-events: auto; /* enable interactions when shown */
+  pointer-events: auto;
 }
 
 nav ul {
@@ -77,84 +72,78 @@ nav ul {
 }
 nav a {
   text-decoration: none;
-  color: #0077ff;
+  color: #7ab69d;
   font-family: 'Press Start 2P', cursive;
   padding: 3px 6px;
   border-radius: 3px;
   transition: all 0.3s ease;
 }
 nav a:hover {
-  color: #ffffff; /* bright white */
-  background: #00ff66; /* neon green background */
-  padding: 3px 6px;
-  border-radius: 3px;
-  box-shadow: 0 0 8px #00ff66;
+  color: #ffffff;
+  background: #b6e2d3;
+  box-shadow: 0 0 8px #c8f4e3;
 }
 
-/* active: highlight current page */
+/* active */
 nav a.active {
-  color: #2ddd50; /* neon pink */
-  background: black;
-  border: 1px solid #00ff51;
-  padding: 3px 6px;
-  border-radius: 3px;
-  box-shadow: 0 0 6px #2ab23e;
+  color: #7ab69d;
+  background: #fdfdfd;
+  border: 1px solid #b6e2d3;
+  box-shadow: 0 0 6px #c8f4e3;
 }
 
 /* back button */
 .back-btn {
   font-family: 'Press Start 2P', cursive;
   background: none;
-  border: 1px solid #00ff66;
-  color: #00ff66;
+  border: 1px solid #b6e2d3;
+  color: #7ab69d;
   padding: 5px 10px;
   cursor: pointer;
 }
 .back-btn:hover {
-  background-color: #00ff66;
-  color: black;
+  background-color: #b6e2d3;
+  color: #fdfdfd;
 }
 
 /* headings */
 h1 {
-    font-family: 'Press Start 2P', cursive; /* pixelated font for headings */
-    font-size: 18px;
-    margin-bottom: 20px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #7ab69d;
 }
-
 h2 {
-    font-family: 'Press Start 2P', cursive;
-    font-size: 16px;
-    margin: 40px 0 20px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 16px;
+  margin: 40px 0 20px;
+  color: #7ab69d;
 }
 
-/* contact page canvas style */
-
+/* contact canvas */
 .contact-canvas-wrap {
   width: 100%;
   display: flex;
   justify-content: center;
   margin: 12px 0 24px;
 }
-
-/* the visible canvas */
 #world {
   display: block;
-  background: #000; /* or whatever color */
+  background: #fdfdfd;
 }
-/* small hint text below canvas */
 .hint {
   font-family: 'VT323', monospace;
-  color: #000000;
+  color: #7ab69d;
   text-align: center;
   margin-top: 8px;
   font-size: 24px;
 }
 
+/* buttons */
 #gravityBtn {
-  background: black;
-  border: 1px solid #00ff66;
-  color: #00ff66;
+  background: #fdfdfd;
+  border: 1px solid #b6e2d3;
+  color: #7ab69d;
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
   padding: 6px 10px;
@@ -162,42 +151,33 @@ h2 {
   margin-bottom: 10px;
   transition: all 0.2s ease;
 }
-
 #gravityBtn:hover {
-  background: currentColor;
-  color: black;
+  background: #b6e2d3;
+  color: #fdfdfd;
 }
 
 /* popup overlay */
 .popup {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  inset: 0;
+  background: rgba(255,255,255,0.9);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 100;
 }
+.popup.hidden { display: none; }
 
-/* hidden state */
-.popup.hidden {
-  display: none;
-}
-
-/* popup box */
 .popup-content {
-  background: #000;
-  border: 3px solid #00ff66;
+  background: #fdfdfd;
+  border: 3px solid #b6e2d3;
   padding: 40px 60px;
-  color: #00ff66;
+  color: #7ab69d;
   font-family: 'VT323', monospace;
-  font-size: 28px; /* bigger text */
+  font-size: 28px;
   line-height: 1.6;
   text-align: center;
-  box-shadow: 0 0 30px #00ff66, 0 0 10px #00ff66 inset;
+  box-shadow: 0 0 30px #c8f4e3, 0 0 10px #c8f4e3 inset;
   border-radius: 12px;
   max-width: 600px;
   width: 80%;
@@ -208,91 +188,80 @@ h2 {
 #popupButtons {
   display: flex;
   justify-content: center;
-  gap: 24px; /* spacing between buttons */
+  gap: 24px;
   margin-top: 30px;
 }
-
-/* button style */
 #popupButtons button {
   background: none;
-  border: 2px solid #00ff66;
-  color: #00ff66;
+  border: 2px solid #b6e2d3;
+  color: #7ab69d;
   font-family: 'Press Start 2P', cursive;
   font-size: 12px;
   padding: 12px 24px;
   cursor: pointer;
   transition: all 0.25s ease;
   border-radius: 6px;
-  box-shadow: 0 0 10px #00ff66 inset;
+  box-shadow: 0 0 10px #c8f4e3 inset;
 }
-
-/* hover + active */
 #popupButtons button:hover {
-  background: #00ff66;
-  color: black;
-  box-shadow: 0 0 12px #00ff66;
+  background: #b6e2d3;
+  color: #fdfdfd;
+  box-shadow: 0 0 12px #c8f4e3;
 }
-
 #popupButtons button:active {
   transform: scale(0.96);
 }
 
-/* sections */
-section {
-    margin-bottom: 60px;
-}
-
-/* footer */
+/* sections & footer */
+section { margin-bottom: 60px; }
 footer {
-    margin-top: 60px;
-    font-size: 14px;
-    color: #555;
+  margin-top: 60px;
+  font-size: 14px;
+  color: #777;
 }
 
-/* --- Runner gate overlay (retro look) --- */
+/* --- Runner gate overlay --- */
 .gate-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.92);
+  background: rgba(255,255,255,0.9);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
 }
-
 .gate-overlay.hidden { display: none; }
 
 .gate-panel {
-  background: #000;
-  border: 3px solid #00ff66;
-  box-shadow: 0 0 30px #00ff66, 0 0 10px #00ff66 inset;
+  background: #fdfdfd;
+  border: 3px solid #b6e2d3;
+  box-shadow: 0 0 30px #c8f4e3, 0 0 10px #c8f4e3 inset;
   border-radius: 12px;
   padding: 24px 18px;
   width: min(960px, 92vw);
   text-align: center;
-  color: #00ff66;
+  color: #7ab69d;
+  filter: drop-shadow(0 0 8px #e6f4ec);
 }
-
 .gate-panel h1 {
   font-family: 'Press Start 2P', cursive;
   font-size: 18px;
   margin-bottom: 8px;
-  color: #00ff66;
+  color: #7ab69d;
 }
-
 .gate-sub {
   font-family: 'VT323', monospace;
   font-size: 24px;
-  color: #aaffcc;
+  color: #94c9b1;
   margin-bottom: 16px;
 }
-
 .key {
-  border: 1px solid #00ff66;
+  border: 1px solid #b6e2d3;
   padding: 2px 6px;
   border-radius: 4px;
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
+  color: #7ab69d;
 }
 
 .runner-wrap {
@@ -300,17 +269,15 @@ footer {
   margin: 10px auto 6px;
   max-width: 900px;
 }
-
 #runner {
   display: block;
-  width: 100%;              /* JS sets exact CSS px for crisp scaling */
+  width: 100%;
   height: auto;
-  background: #000;
-  border: 2px solid #00ff66;
+  background: #fdfdfd;
+  border: 2px solid #b6e2d3;
   border-radius: 10px;
-  box-shadow: 0 0 16px #00ff66;
+  box-shadow: 0 0 16px #c8f4e3;
 }
-
 .hud {
   position: absolute;
   top: 8px;
@@ -320,37 +287,37 @@ footer {
   justify-content: space-between;
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
-  color: #00ff66;
+  color: #7ab69d;
   pointer-events: none;
 }
-
 .gate-cta {
   display: flex;
   gap: 10px;
   justify-content: center;
   margin: 8px 0 4px;
 }
-
 .ui-btn {
   background: none;
-  border: 2px solid #00ff66;
-  color: #00ff66;
+  border: 2px solid #b6e2d3;
+  color: #7ab69d;
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
   padding: 8px 14px;
   cursor: pointer;
   transition: all 0.2s ease;
   border-radius: 6px;
-  box-shadow: 0 0 10px #00ff66 inset;
+  box-shadow: 0 0 10px #c8f4e3 inset;
 }
 .ui-btn:hover {
-  background: #00ff66;
-  color: #000;
-  box-shadow: 0 0 14px #00ff66;
+  background: #b6e2d3;
+  color: #fdfdfd;
+  box-shadow: 0 0 14px #c8f4e3;
 }
 .gate-hint {
   font-family: 'VT323', monospace;
   font-size: 20px;
-  color: #66ffb3;
+  color: #94c9b1;
   margin-top: 2px;
 }
+
+
