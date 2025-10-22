@@ -1,44 +1,66 @@
 <!DOCTYPE html>
-<script src="js/main.js"></script>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>_main</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>_main</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script defer src="js/main.js"></script>
+  <!-- NEW: the runner game -->
+  <script defer src="js/crunner.js"></script>
 </head>
 <body>
-    <header>
-        <div class="navbar">
-            <button class="back-btn" onclick="history.back()">⬅ Back</button>
+  <header>
+    <div class="navbar">
+      <button class="back-btn" onclick="history.back()">⬅ Back</button>
 
-            <div class="menu-toggle" id="menuToggle">
-            <div></div>
-            <div></div>
-            <div></div>
-            </div>
+      <div class="menu-toggle" id="menuToggle">
+        <div></div><div></div><div></div>
+      </div>
 
-            <nav id="menu" class="hidden">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="projects.html">Projects</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-            </nav>
+      <nav id="menu" class="hidden">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- GATE OVERLAY: blocks the site until score >= 300 -->
+  <div id="gameGate" class="gate-overlay hidden">
+    <div class="gate-panel">
+      <h1>Unlock the Portfolio</h1>
+      <p class="gate-sub">Score <strong>300</strong> to enter. Tap / click / press <span class="key">Space</span> or <span class="key">↑</span> to jump.</p>
+
+      <div class="runner-wrap">
+        <canvas id="runner" width="800" height="240" aria-label="Runner game"></canvas>
+        <div class="hud">
+          <div class="score">SCORE: <span id="scoreVal">0</span></div>
+          <div class="target">TARGET: 300</div>
         </div>
-    </header>
+      </div>
 
-    <main>
-        <section id = "home">
-            <h1>Welcome to My Portfolio</h1>
-            <p>Discover my projects and get to know me!</p>
-        </section>
-    </main>
+      <div class="gate-cta">
+        <button id="resetBtn" class="ui-btn" aria-label="Reset game">Reset</button>
+        <button id="muteBtn" class="ui-btn" aria-label="Mute sounds">Mute</button>
+      </div>
+      <p class="gate-hint">Already beat it this tab? I’ll remember and let you in.</p>
+    </div>
+  </div>
 
-    <footer>
-        <p>&copy; 2025 Antonio Palmeirim</p>
-    </footer>
+  <main>
+    <section id="home">
+        <h1>Welcome to My Portfolio</h1>
+        <p>Discover my projects and get to know me!</p>
+        <button id="playAgainBtn" class="ui-btn" style="margin-top: 20px;">Play Game Again</button>
+    </section>
+  </main>
 
+  <footer>
+    <p>&copy; 2025 Antonio Palmeirim</p>
+  </footer>
 </body>
 </html>
