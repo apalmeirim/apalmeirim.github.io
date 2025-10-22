@@ -30,6 +30,29 @@
   if (!canvas || !gate) return;
 
   const ctx = canvas.getContext("2d");
+
+  function getThemeColors() {
+  const root = getComputedStyle(document.body);
+  return {
+    bg: root.getPropertyValue("--panel-bg").trim(),
+    text: root.getPropertyValue("--text-color").trim(),
+    mint: root.getPropertyValue("--mint").trim(),
+    mintLight: root.getPropertyValue("--mint-light").trim(),
+    mintGlow: root.getPropertyValue("--mint-glow").trim(),
+    orange: root.getPropertyValue("--orange").trim(),
+    orangeLight: root.getPropertyValue("--orange-light").trim()
+  };
+}
+
+let theme = getThemeColors();
+
+// Watch for theme changes (when user toggles)
+const observer = new MutationObserver(() => {
+  theme = getThemeColors();
+});
+
+observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+
   let W = canvas.width, H = canvas.height;
   const groundY = Math.round(H * 0.8);
 
@@ -76,11 +99,11 @@
     if (full) STATE.score = 0;
     scoreVal.textContent = STATE.score.toString();
     if (STATE.unlocked) {
-    scoreVal.style.color = "#f6c76a"; // gold color if unlocked
+    scoreVal.style.color = theme.orangeLight; // gold color if unlocked
     } else {
-    scoreVal.style.color = "#7ab69d"; // default green
+    scoreVal.style.color = theme.mint; // default green
     }
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++) {   
       clouds.push({ x: Math.random() * W, y: 30 + Math.random() * 60, s: 0.2 + Math.random() * 0.6 });
     }
     loop();
@@ -167,7 +190,7 @@
       if (STATE.score >= STATE.target && !STATE.reachedTarget) {
         STATE.reachedTarget = true;
         saveUnlock();
-        scoreVal.style.color = "#f6c76a";
+        scoreVal.style.color = theme.text;
         goalFlashTime = 1000; // show for 1 second
     }   
     }
@@ -185,7 +208,7 @@
 
   /* Drawing functions with pastel palette */
   function drawGround() {
-    ctx.fillStyle = "#7ab69d";
+    ctx.fillStyle = theme.mint;
     ctx.fillRect(0, groundY + 1, W, 2);
     const dashGap = 18, dashW = 10, y = groundY + 10;
     for (let x = -((frame * STATE.speed) % (dashGap + dashW)); x < W; x += dashGap + dashW) {
@@ -194,14 +217,14 @@
   }
 
   function drawCloud(x, y) {
-    ctx.fillStyle = "#b6e2d3";
+    ctx.fillStyle = theme.mintLight;
     ctx.fillRect(x, y, 18, 4);
     ctx.fillRect(x - 6, y + 4, 30, 4);
     ctx.fillRect(x - 12, y + 8, 44, 4);
   }
 
   function drawSpike(o) {
-    ctx.fillStyle = "#94c9b1";
+    ctx.fillStyle = theme.mintGlow;
     ctx.beginPath();
     ctx.moveTo(o.x, o.y);
     ctx.lineTo(o.x + o.w / 2, o.y - o.h);
@@ -221,7 +244,7 @@
   }
 
   function draw() {
-    ctx.fillStyle = "#fdfdfd";
+    ctx.fillStyle = theme.bg;
     ctx.fillRect(0, 0, W, H);
 
     clouds.forEach(c => drawCloud(c.x, c.y));
@@ -236,19 +259,19 @@
     if (STATE.over) {
         if (STATE.unlocked) {
             // Player has beaten the game before
-            ctx.fillStyle = "#f6c76a";
+            ctx.fillStyle = theme.text; 
             ctx.fillText("You made it! Press R to restart or Enter to continue", W / 2, H * 0.42);
         } else {
             // Player has never reached 300
-            ctx.fillStyle = "#7ab69d";
+            ctx.fillStyle = theme.text; 
             ctx.fillText("Ouch! Press R to retry", W / 2, H * 0.42);
         }
     } else if (!STATE.running) {
-      ctx.fillStyle = "#7ab69d";
+      ctx.fillStyle = theme.mint;
       ctx.fillText("Tap / Space / ↑ to start", W / 2, H * 0.42);
     }
     if (goalFlashTime > 0) {
-        ctx.fillStyle = "#f8c8a0";
+        ctx.fillStyle = theme.orangeLight;
         ctx.font = "16px 'Press Start 2P', monospace";
         ctx.textAlign = "center";
         ctx.fillText("GOAL REACHED!", W / 2, H * 0.35);
@@ -279,16 +302,20 @@
   playAgainBtn?.addEventListener("click", () => { gate.classList.remove("hidden"); reset(); });
 
   gate.classList.remove("hidden");
-    // 1. Load persistent unlock first
-    loadUnlockState();
+  // Load persistent unlock first
+  loadUnlockState();
 
-    // 2. Show gate overlay
+  // Adjust canvas size
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  // Start loop safely after unlock state is known
+  requestAnimationFrame(() => reset(true));
+
+  // Show overlay only if not unlocked yet
+  if (!STATE.unlocked) {
     gate.classList.remove("hidden");
-
-    // 3. Adjust canvas size
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    // 4. Start loop safely after unlock state is known
-    requestAnimationFrame(() => reset(true));
+  } else {
+    gate.classList.add("hidden");
+  }
 })();
