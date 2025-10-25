@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>_main</title>
   <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/terminal.css">
   <script defer src="js/main.js"></script>
-  <!-- NEW: the runner game -->
   <script defer src="js/crunner.js"></script>
+  <script src="js/terminal.js"></script>
 </head>
 <body>
   <header>
@@ -36,11 +37,13 @@
   </div>
 
   <main>
-    <section id="home">
-        <h1>Welcome to My Portfolio</h1>
-        <p>Discover my projects and get to know me!</p>
-        <button id="playAgainBtn" class="ui-btn" style="margin-top: 20px;">Play Game Again!</button>
-    </section>
+    <main id="terminal-container">
+        <div id="terminal-output"></div>
+        <div id="terminal-input-line">
+            <span id="prompt" class="prompt"></span>
+            <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" />
+        </div>
+    </main>
   </main>
 
   <footer>

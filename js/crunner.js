@@ -125,6 +125,7 @@ observer.observe(document.body, { attributes: true, attributeFilter: ["class"] }
     if (STATE.unlocked) {
         // Player has beaten the game → Enter always skips
         gate.classList.add("hidden");
+        detachGameKeys(); 
     } else {
         // Player hasn’t beaten 300 yet → restart instead
         reset();
@@ -295,7 +296,15 @@ observer.observe(document.body, { attributes: true, attributeFilter: ["class"] }
     canvas.style.height = `${targetH}px`;
   }
 
+  // space bar fix
+  function attachGameKeys() {
   window.addEventListener("keydown", onKey);
+  }
+  function detachGameKeys() {
+    window.removeEventListener("keydown", onKey);
+  }
+
+  attachGameKeys();
   canvas.addEventListener("pointerdown", onPointer, { passive: true });
   resetBtn?.addEventListener("click", () => reset());
   if (muteBtn) muteBtn.style.display = "none";
@@ -315,7 +324,9 @@ observer.observe(document.body, { attributes: true, attributeFilter: ["class"] }
   // Show overlay only if not unlocked yet
   if (!STATE.unlocked) {
     gate.classList.remove("hidden");
+    attachGameKeys();
   } else {
     gate.classList.add("hidden");
+    detachGameKeys();
   }
 })();
