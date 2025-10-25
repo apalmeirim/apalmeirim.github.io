@@ -29,8 +29,9 @@ It’s a space that evolves with me as I keep learning and building.
 ## 📬 Contact
 
 - [**LinkedIn**](https://www.linkedin.com/in/antonio-palmeirim-912200265/)
-- [**Email:**](mailto:apalmeirim03@gmail.com)
+- [**Email**](mailto:apalmeirim03@gmail.com)
 
 ---
 
 © 2025 Antonio Palmeirim. All rights reserved.
+
