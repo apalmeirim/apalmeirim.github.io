@@ -1,50 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>_main</title>
-  <link rel="stylesheet" href="css/style.css"/>
-  <script defer src="js/main.js"></script>
-  <!-- NEW: the runner game -->
-  <script defer src="js/crunner.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snoopy Sleeping</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #0d0d0d;
+      text-align: center;
+    }
+
+    img {
+      max-width: 247px;
+      height: auto;
+    }
+
+    footer {
+      margin-top: 47px;
+      font-size: 0.9rem;
+      color: #ffffff;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <div id="navbar-container"></div>
-
-  <!-- GATE OVERLAY: blocks the site until score >= 300 -->
-  <div id="gameGate" class="gate-overlay hidden">
-    <div class="gate-panel">
-      <h1>Unlock the Portfolio</h1>
-      <p class="gate-sub">Score <strong>300</strong> to enter. Tap / click / press <span class="key">Space</span> or <span class="key">↑</span> to jump.</p>
-
-      <div class="runner-wrap">
-        <canvas id="runner" width="800" height="240" aria-label="Runner game"></canvas>
-        <div class="hud">
-          <div class="score">SCORE: <span id="scoreVal">0</span></div>
-          <div class="target">TARGET: 300</div>
-        </div>
-      </div>
-
-      <div class="gate-cta">
-        <button id="resetBtn" class="ui-btn" aria-label="Reset game">Reset</button>
-        <button id="muteBtn" class="ui-btn" aria-label="Mute sounds">Mute</button>
-      </div>
-      <p class="gate-hint">Already beat it this tab? I’ll remember and let you in.</p>
-    </div>
-  </div>
-
-  <main>
-    <section id="home">
-        <h1>Welcome to My Portfolio</h1>
-        <p>Discover my projects and get to know me!</p>
-        <button id="playAgainBtn" class="ui-btn" style="margin-top: 20px;">Play Game Again!</button>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 Antonio Palmeirim</p>
-  </footer>
+  <img src="assets/images/sleepy-asleep_gif.gif" alt="Snoopy Sleeping">
+  <footer> &copy; Antonio Palmeirim. All rights reserved.</footer>
 </body>
 </html>
