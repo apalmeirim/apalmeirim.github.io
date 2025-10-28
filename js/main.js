@@ -1,13 +1,10 @@
 const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'light') {
-  document.body.classList.remove('dark-mode');
-} else {
-  document.body.classList.add('dark-mode');
-}
+applyTheme(savedTheme !== 'light');
 
 document.addEventListener('DOMContentLoaded', () => {
   loadNavbar();
   initTerminalOverlay();
+  initMainThemeToggle();
 });
 
 function initNavbar() {
@@ -44,10 +41,7 @@ function initNavbar() {
   // Theme toggle in dropdown
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem('theme',
-        document.body.classList.contains('dark-mode') ? 'dark' : 'light'
-      );
+      toggleTheme();
     });
   }
 
@@ -62,45 +56,22 @@ async function loadNavbar() {
   const mount = document.getElementById('navbar-container');
   if (!mount) return;
 
-  const scriptEl = document.currentScript || document.querySelector('script[src*="js/main.js"]');
-  const scriptURL = scriptEl
-    ? new URL(scriptEl.getAttribute('src'), window.location.href)
-    : new URL('js/main.js', window.location.href);
+  const url = new URL('components/navbar.html', window.location.href);
 
-  const candidateUrls = [
-    new URL('../components/navbar.html', scriptURL).href,
-    new URL('../../components/navbar.html', scriptURL).href,
-    new URL('components/navbar.html', window.location.href).href,
-    new URL('./components/navbar.html', window.location.href).href
-  ];
-
-  let lastError = null;
-
-  for (const url of candidateUrls) {
-    try {
-      const res = await fetch(url, { cache: 'no-store' });
-      if (!res.ok) {
-        lastError = new Error(`HTTP ${res.status} for ${url}`);
-        continue;
-      }
-      const html = await res.text();
-      mount.innerHTML = html;
-      initNavbar();
-      return;
-    } catch (err) {
-      lastError = err;
-    }
-  }
-
-  if (lastError) {
-    console.error('Navbar load failed:', lastError);
+  try {
+    const res = await fetch(url.href, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status} for ${url.href}`);
+    const html = await res.text();
+    mount.innerHTML = html;
+    initNavbar();
+  } catch (err) {
+    console.error('Navbar load failed:', err);
   }
 }
 
 function initTerminalOverlay() {
   const overlay = document.getElementById('terminalOverlay');
   const openBtn = document.getElementById('openTerminalBtn');
-  const closeBtn = document.getElementById('closeTerminalBtn');
   const terminalInput = document.getElementById('terminal-input');
 
   if (!overlay || !openBtn) return;
@@ -131,7 +102,6 @@ function initTerminalOverlay() {
   };
 
   openBtn.addEventListener('click', openOverlay);
-  closeBtn?.addEventListener('click', closeOverlay);
   overlay.addEventListener('click', (event) => {
     if (event.target === overlay) closeOverlay();
   });
@@ -141,4 +111,33 @@ function initTerminalOverlay() {
       closeOverlay();
     }
   });
+}
+
+function initMainThemeToggle() {
+  const toggle = document.getElementById('mainThemeToggle');
+  if (!toggle) return;
+  updateFooterToggleState();
+  toggle.addEventListener('click', () => {
+    toggleTheme();
+  });
+}
+
+function toggleTheme() {
+  applyTheme(!isDarkMode());
+}
+
+function applyTheme(isDark) {
+  document.body.classList.toggle('dark-mode', isDark);
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  updateFooterToggleState();
+}
+
+function isDarkMode() {
+  return document.body.classList.contains('dark-mode');
+}
+
+function updateFooterToggleState() {
+  const toggle = document.getElementById('mainThemeToggle');
+  if (!toggle) return;
+  toggle.setAttribute('aria-pressed', String(isDarkMode()));
 }

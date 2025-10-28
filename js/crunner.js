@@ -1,7 +1,6 @@
-// crunner.js — Final polished version (fixes speed glitch + persistent unlock)
-
 (() => {
   const STATE = {
+    active: false,
     running: false,
     over: false,
     score: 0,
@@ -11,11 +10,7 @@
     maxSpeed: 14,
     spawnMin: 60,
     spawnMax: 110,
-    target: 300,
-    reachedTarget: false,
-    unlocked: false,
-    loopId: null,
-    sessionKey: "runner_gate_cleared"
+    loopId: null
   };
 
   const IMG = new Image();
@@ -25,40 +20,39 @@
   const canvas = document.getElementById("runner");
   const scoreVal = document.getElementById("scoreVal");
   const resetBtn = document.getElementById("resetBtn");
-  const muteBtn = document.getElementById("muteBtn");
-  const playAgainBtn = document.getElementById("playAgainBtn");
-  if (!canvas || !gate) return;
+  const closeBtn = document.getElementById("closeGameBtn");
+  const playBtn = document.getElementById("playGameBtn");
+
+  if (!gate || !canvas || !scoreVal || !playBtn) return;
 
   const ctx = canvas.getContext("2d");
 
   function getThemeColors() {
-  const root = getComputedStyle(document.body);
-  return {
-    bg: root.getPropertyValue("--panel-bg").trim(),
-    text: root.getPropertyValue("--text-color").trim(),
-    mint: root.getPropertyValue("--mint").trim(),
-    mintLight: root.getPropertyValue("--mint-light").trim(),
-    mintGlow: root.getPropertyValue("--mint-glow").trim(),
-    orange: root.getPropertyValue("--orange").trim(),
-    orangeLight: root.getPropertyValue("--orange-light").trim()
-  };
-}
+    const root = getComputedStyle(document.body);
+    return {
+      bg: root.getPropertyValue("--panel-bg").trim(),
+      text: root.getPropertyValue("--text-color").trim(),
+      mint: root.getPropertyValue("--mint").trim(),
+      mintLight: root.getPropertyValue("--mint-light").trim(),
+      mintGlow: root.getPropertyValue("--mint-glow").trim(),
+      orange: root.getPropertyValue("--orange").trim(),
+      orangeLight: root.getPropertyValue("--orange-light").trim()
+    };
+  }
 
-let theme = getThemeColors();
+  let theme = getThemeColors();
+  const observer = new MutationObserver(() => {
+    theme = getThemeColors();
+  });
+  observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
 
-// Watch for theme changes (when user toggles)
-const observer = new MutationObserver(() => {
-  theme = getThemeColors();
-});
-
-observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
-
-  let W = canvas.width, H = canvas.height;
+  let W = canvas.width;
+  let H = canvas.height;
   const groundY = Math.round(H * 0.8);
-
-  let frame = 0, spawnIn = 90;
-  let obstacles = [], clouds = [];
-  let goalFlashTime = 0;
+  let frame = 0;
+  let spawnIn = 90;
+  let obstacles = [];
+  let clouds = [];
 
   const player = {
     x: Math.round(W * 0.12),
@@ -70,23 +64,10 @@ observer.observe(document.body, { attributes: true, attributeFilter: ["class"] }
     bob: 0
   };
 
-  function loadUnlockState() {
-    STATE.unlocked = sessionStorage.getItem(STATE.sessionKey) === "1";
-    if (STATE.unlocked) {
-      STATE.reachedTarget = true;
-      scoreVal.style.color = "#f6c76a";
-    }
-  }
-
-  function saveUnlock() {
-    STATE.unlocked = true;
-    STATE.reachedTarget = true;
-    sessionStorage.setItem(STATE.sessionKey, "1");
-  }
-
   function reset(full = true) {
+    if (!STATE.active) return;
     cancelAnimationFrame(STATE.loopId);
-    STATE.running = true;
+    STATE.running = false;
     STATE.over = false;
     STATE.speed = 6;
     frame = 0;
@@ -98,19 +79,17 @@ observer.observe(document.body, { attributes: true, attributeFilter: ["class"] }
     player.onGround = true;
     if (full) STATE.score = 0;
     scoreVal.textContent = STATE.score.toString();
-    if (STATE.unlocked) {
-    scoreVal.style.color = theme.orangeLight; // gold color if unlocked
-    } else {
-    scoreVal.style.color = theme.mint; // default green
-    }
-    for (let i = 0; i < 3; i++) {   
+    scoreVal.style.color = theme.mint;
+    for (let i = 0; i < 3; i++) {
       clouds.push({ x: Math.random() * W, y: 30 + Math.random() * 60, s: 0.2 + Math.random() * 0.6 });
     }
-    loop();
+    draw();
+    STATE.loopId = requestAnimationFrame(loop);
   }
 
   function doJump() {
-    if (!STATE.running || STATE.over) return;
+    if (!STATE.active) return;
+    if (!STATE.running) STATE.running = true;
     if (player.onGround) {
       player.vy = STATE.jumpVel;
       player.onGround = false;
@@ -120,28 +99,28 @@ observer.observe(document.body, { attributes: true, attributeFilter: ["class"] }
   function onKey(e) {
     if (e.code === "Space" || e.code === "ArrowUp") {
       e.preventDefault();
-      doJump();
-    } else if (e.code === "Enter" && STATE.over) {
-    if (STATE.unlocked) {
-        // Player has beaten the game → Enter always skips
-        gate.classList.add("hidden");
-        detachGameKeys(); 
-    } else {
-        // Player hasn’t beaten 300 yet → restart instead
+      if (STATE.over) {
         reset();
-    }
-    e.preventDefault();
-    }
-
-    else if (e.code === "KeyR" && STATE.over) {
-    // Always restart the game
-    e.preventDefault();
-    reset();
+      } else {
+        doJump();
+      }
+    } else if (e.code === "Enter" || e.code === "KeyR") {
+      if (STATE.over) {
+        e.preventDefault();
+        reset();
+      }
+    } else if (e.code === "Escape") {
+      e.preventDefault();
+      closeGame();
     }
   }
 
   function onPointer() {
-    if (STATE.over) { reset(); return; }
+    if (!STATE.active) return;
+    if (STATE.over) {
+      reset();
+      return;
+    }
     doJump();
   }
 
@@ -188,30 +167,32 @@ observer.observe(document.body, { attributes: true, attributeFilter: ["class"] }
     if (frame % 3 === 0) {
       STATE.score++;
       scoreVal.textContent = STATE.score.toString();
-      if (STATE.score >= STATE.target && !STATE.reachedTarget) {
-        STATE.reachedTarget = true;
-        saveUnlock();
-        scoreVal.style.color = theme.text;
-        goalFlashTime = 1000; // show for 1 second
-    }   
     }
 
     for (const o of obstacles) {
-      const px = player.x + 6, pw = player.w - 12;
-      const py = player.y + 6 + player.bob, ph = player.h - 10;
-      const sx = o.x, sy = o.y - o.h, sw = o.w, sh = o.h;
+      const px = player.x + 6;
+      const pw = player.w - 12;
+      const py = player.y + 6 + player.bob;
+      const ph = player.h - 10;
+      const sx = o.x;
+      const sy = o.y - o.h;
+      const sw = o.w;
+      const sh = o.h;
       if (aabb(px, py, pw, ph, sx, sy, sw, sh)) {
         STATE.over = true;
         STATE.running = false;
+        scoreVal.style.color = theme.orange;
+        break;
       }
     }
   }
 
-  /* Drawing functions with pastel palette */
   function drawGround() {
     ctx.fillStyle = theme.mint;
     ctx.fillRect(0, groundY + 1, W, 2);
-    const dashGap = 18, dashW = 10, y = groundY + 10;
+    const dashGap = 18;
+    const dashW = 10;
+    const y = groundY + 10;
     for (let x = -((frame * STATE.speed) % (dashGap + dashW)); x < W; x += dashGap + dashW) {
       ctx.fillRect(x, y, dashW, 2);
     }
@@ -256,31 +237,18 @@ observer.observe(document.body, { attributes: true, attributeFilter: ["class"] }
     ctx.font = "14px 'Press Start 2P', monospace";
     ctx.textBaseline = "top";
     ctx.textAlign = "center";
+    ctx.fillStyle = theme.text;
 
     if (STATE.over) {
-        if (STATE.unlocked) {
-            // Player has beaten the game before
-            ctx.fillStyle = theme.text; 
-            ctx.fillText("You made it! Press R to restart or Enter to continue", W / 2, H * 0.42);
-        } else {
-            // Player has never reached 300
-            ctx.fillStyle = theme.text; 
-            ctx.fillText("Ouch! Press R to retry", W / 2, H * 0.42);
-        }
+      ctx.fillText("ouch! press R, Enter, or tap to try again", W / 2, H * 0.42);
     } else if (!STATE.running) {
       ctx.fillStyle = theme.mint;
-      ctx.fillText("Tap / Space / ↑ to start", W / 2, H * 0.42);
-    }
-    if (goalFlashTime > 0) {
-        ctx.fillStyle = theme.orangeLight;
-        ctx.font = "16px 'Press Start 2P', monospace";
-        ctx.textAlign = "center";
-        ctx.fillText("GOAL REACHED!", W / 2, H * 0.35);
-        goalFlashTime -= 1000 / 60; // roughly 1 second at 60 FPS
+      ctx.fillText("tap / space / ↑ to start", W / 2, H * 0.42);
     }
   }
 
   function loop() {
+    if (!STATE.active) return;
     if (STATE.running) update();
     draw();
     STATE.loopId = requestAnimationFrame(loop);
@@ -296,37 +264,39 @@ observer.observe(document.body, { attributes: true, attributeFilter: ["class"] }
     canvas.style.height = `${targetH}px`;
   }
 
-  // space bar fix
   function attachGameKeys() {
-  window.addEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKey);
   }
+
   function detachGameKeys() {
     window.removeEventListener("keydown", onKey);
   }
 
-  attachGameKeys();
-  canvas.addEventListener("pointerdown", onPointer, { passive: true });
-  resetBtn?.addEventListener("click", () => reset());
-  if (muteBtn) muteBtn.style.display = "none";
-  playAgainBtn?.addEventListener("click", () => { gate.classList.remove("hidden"); reset(); });
-
-  gate.classList.remove("hidden");
-  // Load persistent unlock first
-  loadUnlockState();
-
-  // Adjust canvas size
-  resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
-
-  // Start loop safely after unlock state is known
-  requestAnimationFrame(() => reset(true));
-
-  // Show overlay only if not unlocked yet
-  if (!STATE.unlocked) {
+  function openGame() {
+    if (STATE.active) return;
+    STATE.active = true;
     gate.classList.remove("hidden");
+    gate.setAttribute("aria-hidden", "false");
     attachGameKeys();
-  } else {
-    gate.classList.add("hidden");
-    detachGameKeys();
+    resizeCanvas();
+    reset(true);
   }
+
+  function closeGame() {
+    if (!STATE.active) return;
+    STATE.active = false;
+    gate.classList.add("hidden");
+    gate.setAttribute("aria-hidden", "true");
+    detachGameKeys();
+    cancelAnimationFrame(STATE.loopId);
+    STATE.loopId = null;
+  }
+
+  playBtn.addEventListener("click", openGame);
+  resetBtn?.addEventListener("click", () => reset(true));
+  closeBtn?.addEventListener("click", closeGame);
+  canvas.addEventListener("pointerdown", onPointer, { passive: true });
+  window.addEventListener("resize", () => {
+    if (STATE.active) resizeCanvas();
+  });
 })();

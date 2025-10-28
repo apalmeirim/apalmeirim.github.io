@@ -1,15 +1,15 @@
-// contact.js - floating contact blocks
+// links.js - floating link blocks
 
 const { Engine, Render, Runner, Bodies, World, Mouse, MouseConstraint, Events, Query } = Matter;
 
 const canvas = document.getElementById("world");
-const WIDTH = window.innerWidth * 0.8;
-const HEIGHT = window.innerHeight * 0.7;
+const WIDTH = 520;
+const HEIGHT = 520;
 
 canvas.width  = WIDTH;
 canvas.height = HEIGHT;
-canvas.style.width  = WIDTH + "px";
-canvas.style.height = HEIGHT + "px";
+canvas.style.width  = `${WIDTH}px`;
+canvas.style.height = `${HEIGHT}px`;
 
 const engine = Engine.create();
 const render = Render.create({
@@ -19,7 +19,7 @@ const render = Render.create({
     width: WIDTH,
     height: HEIGHT,
     wireframes: false,
-    background: "#f0f3ceff"
+    background: "transparent"
   }
 });
 
@@ -82,7 +82,7 @@ function createBlocks() {
       restitution: 0.6,
       frictionAir: 0.02,
       render: { 
-        fillStyle: "#edccccff", 
+        fillStyle: "#eeb288ff", 
         strokeStyle: "#000000ff",  // was strokestyle
         lineWidth: 2              // was linewidth
       }
@@ -279,6 +279,41 @@ Events.on(engine, "afterUpdate", () => {
   }
 });
 
+// for phone touch support
+canvas.addEventListener("touchstart", e => {
+  const touch = e.touches[0];
+  mouseDownPos = { x: touch.clientX - canvas.getBoundingClientRect().left,
+                   y: touch.clientY - canvas.getBoundingClientRect().top };
+  mouseDownTime = Date.now();
+});
+
+canvas.addEventListener("touchend", e => {
+  const touch = e.changedTouches[0];
+  const rect = canvas.getBoundingClientRect();
+  const x = touch.clientX - rect.left;
+  const y = touch.clientY - rect.top;
+  const timeHeld = Date.now() - mouseDownTime;
+  const dx = x - mouseDownPos.x;
+  const dy = y - mouseDownPos.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (timeHeld < 250 && distance < 10) {
+    const clicked = Matter.Query.point(engine.world.bodies, { x, y })
+      .find(b => b.contact);
+    if (clicked && clicked.contact) {
+      if (clicked.contact.label === "Phone") {
+        showPopup("phone", "📞 +351 925 307 378");
+      } else if (clicked.contact.label === "Email") {
+        showPopup("email", "a.palmeirim03@gmail.com");
+      } else if (clicked.contact.link) {
+        window.open(clicked.contact.link, "_blank");
+      }
+    }
+  }
+});
+
+canvas.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
+
 // ghosting prevention
 // future fix :d
 
@@ -365,3 +400,4 @@ popup.addEventListener("click", e => {
 preloadImages(() => {
   createBlocks();
 });
+

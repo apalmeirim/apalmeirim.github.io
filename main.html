@@ -5,46 +5,72 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>_main</title>
   <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/terminal.css"/>
   <script defer src="js/main.js"></script>
-  <!-- NEW: the runner game -->
   <script defer src="js/crunner.js"></script>
+  <script defer src="js/terminal.js"></script>
 </head>
 <body>
   <header>
-    <div id="navbar-container"></div>
+    <div class="navbar-spacer" aria-hidden="true"></div>
 
-  <!-- GATE OVERLAY: blocks the site until score >= 300 -->
-  <div id="gameGate" class="gate-overlay hidden">
-    <div class="gate-panel">
-      <h1>Unlock the Portfolio</h1>
-      <p class="gate-sub">Score <strong>300</strong> to enter. Tap / click / press <span class="key">Space</span> or <span class="key">↑</span> to jump.</p>
+    <div id="gameGate" class="gate-overlay hidden" aria-hidden="true">
+      <div class="gate-panel" role="dialog" aria-modal="true" aria-labelledby="runnerGameTitle">
+        <h1 id="runnerGameTitle">scratch cat runner</h1>
+        <p class="gate-sub">tap, click, or press <span class="key">space</span> / <span class="key">↑</span> to jump. rack up as many points as you like!</p>
 
-      <div class="runner-wrap">
-        <canvas id="runner" width="800" height="240" aria-label="Runner game"></canvas>
-        <div class="hud">
-          <div class="score">SCORE: <span id="scoreVal">0</span></div>
-          <div class="target">TARGET: 300</div>
+        <div class="runner-wrap">
+          <canvas id="runner" width="800" height="240" aria-label="Runner game"></canvas>
+          <div class="hud">
+            <div class="score">SCORE: <span id="scoreVal">0</span></div>
+          </div>
+        </div>
+
+        <div class="gate-cta">
+          <button id="resetBtn" class="ui-btn" aria-label="Reset game">reset</button>
+          <button id="closeGameBtn" class="ui-btn" aria-label="Close game">close</button>
         </div>
       </div>
-
-      <div class="gate-cta">
-        <button id="resetBtn" class="ui-btn" aria-label="Reset game">Reset</button>
-        <button id="muteBtn" class="ui-btn" aria-label="Mute sounds">Mute</button>
-      </div>
-      <p class="gate-hint">Already beat it this tab? I’ll remember and let you in.</p>
     </div>
-  </div>
+
+  </header>
 
   <main>
     <section id="home">
-        <h1>Welcome to My Portfolio</h1>
-        <p>Discover my projects and get to know me!</p>
-        <button id="playAgainBtn" class="ui-btn" style="margin-top: 20px;">Play Game Again!</button>
+        <h1>_main</h1>
+        <div class="home-layout">
+          <div class="home-links">
+            <button type="button" id="showcaseBtn" class="home-link">showcase</button>
+            <a id="linksBtn" class="home-link" href="links.html">links</a>
+            <a id="projectsBtn" class="home-link" href="projects.html">projects</a>
+            <a id="aboutBtn" class="home-link" href="about.html">about me</a>
+          </div>
+          <button type="button" id="playGameBtn" class="home-link runner-link">runner.exe</button>
+          <button type="button" id="openTerminalBtn" class="home-link terminal-link" aria-haspopup="dialog">>_</button>
+        </div>
     </section>
   </main>
 
+  <div id="terminalOverlay" class="terminal-overlay hidden" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="terminal-panel">
+      <div id="terminal-container">
+        <div id="terminal-output"></div>
+        <div id="terminal-input-line">
+          <span id="prompt" class="prompt"></span>
+          <input id="terminal-input" type="text" autocomplete="off" aria-label="Terminal input"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <footer>
+    <div class="footer-controls">
+      <button type="button" id="mainThemeToggle" class="toggle-switch" aria-pressed="false" aria-label="Toggle theme">
+        <span class="toggle-thumb"></span>
+      </button>
+    </div>
     <p>&copy; 2025 Antonio Palmeirim</p>
   </footer>
 </body>
 </html>
+

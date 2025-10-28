@@ -76,12 +76,27 @@ footer { margin-top: 60px; font-size: 14px; color: var(--text-color); }
 /* --------------------------------------------
    Navigation
 --------------------------------------------- */
+#navbar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.navbar-spacer {
+  min-height: 60px;
+  margin-bottom: 40px;
+}
+
 .navbar {
   position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 40px;
+  justify-content: center;
+  margin: 0 auto;
 }
 
 /* Hamburger — flat lines, no border box */
@@ -113,18 +128,18 @@ footer { margin-top: 60px; font-size: 14px; color: var(--text-color); }
 nav.dropdown {
   position: absolute;
   top: calc(100% + 8px);
-  left: 0;
+  left: 50%;
   background: var(--panel-bg);
   border: 1px solid var(--accent-border);
-  padding: 10px;
+  padding: 12px 18px;
   transform-origin: top;
-  transform: scaleY(0);
+  transform: translateX(-50%) scaleY(0);
   opacity: 0;
   pointer-events: none;
   transition: transform 0.2s ease-out, opacity 0.2s ease-out;
 }
 nav.dropdown.show {
-  transform: scaleY(1);
+  transform: translateX(-50%) scaleY(1);
   opacity: 1;
   pointer-events: auto;
 }
@@ -142,19 +157,17 @@ nav.dropdown a {
   font-family: 'Press Start 2P', cursive;
   text-decoration: none;
   color: var(--text-color);
-  padding: 6px 8px;
-  border-radius: 4px;
-  transition: all 0.25s ease;
+  padding: 4px 0;
+  border-radius: 0;
+  transition: color 0.25s ease;
 }
 nav.dropdown a:hover {
-  color: var(--panel-bg);
-  background: var(--accent-alt);
-  box-shadow: 0 0 8px var(--accent-glow);
+  color: var(--accent-main);
+  background: none;
 }
 nav.dropdown a.active {
-  background: var(--panel-bg);
-  border: 1px solid var(--accent-border);
-  box-shadow: 0 0 6px var(--accent-glow);
+  color: var(--accent-main);
+  background: none;
 }
 
 /* Theme toggle button (rectangular style) */
@@ -231,6 +244,111 @@ button:hover,
 }
 #popupButtons button:active { transform: scale(0.96); }
 
+/* Home hero buttons */
+.home-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  margin: 30px auto 0;
+  max-width: 360px;
+}
+.home-links {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  text-align: center;
+}
+.home-link {
+  display: inline-block;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: color 0.2s ease, text-shadow 0.25s ease;
+  letter-spacing: 1px;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  box-shadow: none;
+}
+.home-link:hover,
+.home-link:focus-visible {
+  color: var(--accent-main);
+  text-shadow: none;
+  outline: none;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.runner-link {
+  margin-top: 12px;
+  align-self: center;
+}
+.terminal-link {
+  margin-top: 8px;
+  letter-spacing: 0;
+}
+@media (max-width: 640px) {
+  .home-layout {
+    gap: 32px;
+    align-items: center;
+  }
+}
+
+/* --------------------------------------------
+   Terminal Overlay
+--------------------------------------------- */
+body.modal-open {
+  overflow: hidden;
+}
+
+.terminal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 10000;
+}
+.terminal-overlay.hidden {
+  display: none;
+}
+
+.terminal-panel {
+  width: min(860px, 92vw);
+  background: var(--panel-bg);
+  border: 1px solid var(--accent-border);
+  color: var(--text-color);
+  padding: 40px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+.terminal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 18px;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 4px 6px;
+  line-height: 1;
+}
+.terminal-close:hover,
+.terminal-close:focus-visible {
+  color: var(--accent-main);
+  outline: none;
+}
+
 /* --------------------------------------------
    Canvas + Hints
 --------------------------------------------- */
@@ -241,8 +359,11 @@ button:hover,
   margin: 12px 0 24px;
 }
 #world {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
   display: block;
-  background: var(--panel-bg);
 }
 .hint,
 .gate-hint {
@@ -283,8 +404,14 @@ body.dark-mode .popup {
   border-radius: 12px;
   max-width: 600px;
   width: 80%;
-  box-shadow: 0 0 30px var(--accent-glow), 0 0 10px var(--accent-glow) inset;
   animation: popupFadeIn 0.2s ease-out;
+}
+.popup-content .ui-btn,
+.popup-content .ui-btn:hover,
+.popup-content button,
+.popup-content button:hover {
+  box-shadow: none;
+  background: none;
 }
 
 .popup {
@@ -323,12 +450,16 @@ body.dark-mode .gate-overlay {
   background: var(--panel-bg);
   border: 3px solid var(--accent-border);
   border-radius: 12px;
-  padding: 24px 18px;
+  padding: 40px 24px 28px;
   width: min(960px, 92vw);
   color: var(--text-color);
   text-align: center;
-  box-shadow: 0 0 30px var(--accent-glow), 0 0 10px var(--accent-glow) inset;
-  filter: drop-shadow(0 0 8px var(--accent-glow));
+  box-shadow: none;
+}
+.gate-panel .ui-btn,
+.gate-panel .ui-btn:hover {
+  box-shadow: none;
+  background: none;
 }
 .gate-panel h1 {
   font-family: 'Press Start 2P', cursive;
@@ -363,7 +494,7 @@ body.dark-mode .gate-overlay {
   background: var(--panel-bg);
   border: 2px solid var(--accent-border);
   border-radius: 10px;
-  box-shadow: 0 0 16px var(--accent-glow);
+  box-shadow: none;
 }
 .hud {
   position: absolute;
@@ -383,6 +514,11 @@ body.dark-mode .gate-overlay {
   justify-content: center;
   margin: 8px 0 4px;
 }
+.gate-cta .ui-btn,
+.gate-cta .ui-btn:hover {
+  box-shadow: none;
+  background: none;
+}
 
 
 
@@ -398,3 +534,53 @@ body.dark-mode .gate-overlay {
 }
 
 
+/* --------------------------------------------
+   Footer Controls
+--------------------------------------------- */
+.footer-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 56px auto 36px;
+  gap: 20px;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 24px;
+  background: var(--accent-border);
+  border: 2px solid var(--accent-border);
+  border-radius: 999px;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--panel-bg);
+  transition: transform 0.25s ease;
+  box-shadow: none;
+}
+
+.toggle-switch[aria-pressed="true"] {
+  background: var(--accent-main);
+  border-color: var(--accent-main);
+}
+
+.toggle-switch[aria-pressed="true"] .toggle-thumb {
+  transform: translateX(26px);
+}
+
+.toggle-switch:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 3px;
+}

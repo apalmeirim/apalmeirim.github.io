@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<script src="js/main.js"></script>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>_contacts</title>
+    <title>_links</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/main.js" defer></script>
 </head>
 <body>
     <div id="navbar-container"></div>
@@ -13,14 +13,14 @@
 
 
     <main>
-    <h1>Contact</h1>
+    <h1>links</h1>
 
-    <!-- canvas container for matter.js world -->
+    <!-- canvas container for link blocks -->
     <div class="contact-canvas-wrap">
       <canvas id="world"></canvas>
     </div>
 
-    <p class="hint">Drag the blocks — throw them — or click a block to open the contact link.</p>
+    <p class="hint">drag the blocks — throw them — or click a block to open the contact link.</p>
     <div class="contact-controls">
         <button id="gravityBtn">Toggle Gravity</button>
     </div>
@@ -41,6 +41,7 @@
     <!-- local matter.js (self-hosted) -->
     <script src="js/lib/matter.min.js"></script>
     <!-- your contact physics script -->
-    <script src="js/contact.js" defer></script>
+    <script src="js/links.js" defer></script>
 </body>
 </html>
+

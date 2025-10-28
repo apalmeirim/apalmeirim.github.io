@@ -1,33 +1,38 @@
 #terminal-container {
-  background: #000;
-  color: #00ff66;
+  background: #050505;
+  color: #d7ffe6;
   font-family: 'VT323', monospace;
   padding: 20px;
-  width: 90%;
-  max-width: 800px;
-  margin: 60px auto;
-  border: 1px solid #00ff66;
-  border-radius: 8px;
-  min-height: 400px;
-  box-shadow: 0 0 12px #00ff66;
+  width: 100%;
+  min-height: 360px;
+  border: 1px solid #1f1f1f;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 #terminal-output {
+  flex: 1 1 auto;
+  overflow-y: auto;
   white-space: pre-wrap;
-  min-height: 300px;
   text-align: left;
   padding-bottom: 8px;
 }
 
 #terminal-input-line {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #1f1f1f;
+  white-space: nowrap;
 }
 
 .prompt {
   color: #00ff66;
   user-select: none;
+  white-space: pre;
 }
 
 #terminal-input {
@@ -40,7 +45,6 @@
   width: 100%;
 }
 
-/* Command highlight */
 .output-line {
   color: #00ff66;
 }
@@ -53,54 +57,15 @@
   color: #2ad4ff;
 }
 
-#terminal-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
+#terminal-output::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
 }
 
-/* Output scrolls; input bar stays visible */
-#terminal-output {
-  flex: 1 1 auto;
-  overflow-y: auto;
+#terminal-output::-webkit-scrollbar-thumb {
+  background: #094;
 }
 
-/* Input line fixed to bottom inside the container */
-#terminal-input-line {
-  position: sticky;
-  bottom: 0;
-  background: #000;
-  padding-top: 8px;
-  border-top: 1px solid #004d2a;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  white-space: nowrap;       /* prevents prompt from breaking */
-}
-
-/* Keep the prompt on a single line and show backslashes literally */
-.prompt {
-  color: #00ff66;
-  user-select: none;
-  white-space: pre;          /* IMPORTANT: no wrapping, preserve backslashes */
-}
-
-/* Input looks like it's part of the same line */
-#terminal-input {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: #ffffff;
-  font-family: 'VT323', monospace;
-  font-size: 16px;
-  width: 100%;
-}
-
-/* Optional: soften scrollbars in output area (keeps retro feel) */
-#terminal-output::-webkit-scrollbar { height: 8px; width: 8px; }
-#terminal-output::-webkit-scrollbar-thumb { background: #094; }
-
-/* Blinking cursor */
 #terminal-input::after {
   content: '_';
   animation: blink 1s infinite step-start;
