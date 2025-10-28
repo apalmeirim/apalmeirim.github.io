@@ -108,6 +108,8 @@ footer { margin-top: 60px; font-size: 14px; color: var(--text-color); }
   cursor: pointer;
   padding: 4px;
   transition: transform 0.15s ease;
+  background: none;
+  box-shadow: none;
 }
 .menu-toggle span {
   width: 22px;
@@ -118,13 +120,15 @@ footer { margin-top: 60px; font-size: 14px; color: var(--text-color); }
   transition: background 0.2s ease;
 }
 .menu-toggle:hover span {
-  background: var(--accent-alt);
+  background: var(--text-color);
 }
-.menu-toggle:active {
-  transform: scale(0.9);
+.menu-toggle:hover,
+.menu-toggle:focus-visible {
+  background: none;
+  box-shadow: none;
 }
 
-/* Dropdown: left-aligned under hamburger */
+/* Dropdown */
 nav.dropdown {
   position: absolute;
   top: calc(100% + 8px);
@@ -204,7 +208,7 @@ nav.dropdown a.active {
 /* --------------------------------------------
    Buttons (Shared)
 --------------------------------------------- */
-button,
+button:not(.menu-toggle),
 .ui-btn,
 .back-btn,
 #gravityBtn,
@@ -218,7 +222,7 @@ button,
   border-radius: 6px;
   box-shadow: 0 0 8px var(--accent-glow) inset;
 }
-button:hover,
+button:not(.menu-toggle):hover,
 .ui-btn:hover,
 .back-btn:hover,
 #gravityBtn:hover,
@@ -584,3 +588,4 @@ body.dark-mode .gate-overlay {
   outline: 2px solid var(--accent-main);
   outline-offset: 3px;
 }
+

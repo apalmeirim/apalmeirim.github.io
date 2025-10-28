@@ -1,27 +1,42 @@
 // links.js - floating link blocks
 
-const { Engine, Render, Runner, Bodies, World, Mouse, MouseConstraint, Events, Query } = Matter;
+const { Engine, Render, Runner, Bodies, Body, World, Mouse, MouseConstraint, Events, Query } = Matter;
 
 const canvas = document.getElementById("world");
-const WIDTH = 520;
-const HEIGHT = 520;
 
-canvas.width  = WIDTH;
-canvas.height = HEIGHT;
-canvas.style.width  = `${WIDTH}px`;
-canvas.style.height = `${HEIGHT}px`;
+function computeCanvasSize() {
+  const minViewport = Math.min(window.innerWidth, window.innerHeight);
+  const size = Math.max(Math.min(minViewport * 0.85, 520), 260);
+  return Math.round(size);
+}
+
+let canvasWidth = computeCanvasSize();
+let canvasHeight = canvasWidth;
+
+function syncCanvasDimensions() {
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+  canvas.style.width = `${canvasWidth}px`;
+  canvas.style.height = `${canvasHeight}px`;
+}
+
+syncCanvasDimensions();
 
 const engine = Engine.create();
 const render = Render.create({
   canvas: canvas,
   engine: engine,
   options: {
-    width: WIDTH,
-    height: HEIGHT,
+    width: canvasWidth,
+    height: canvasHeight,
     wireframes: false,
     background: "transparent"
   }
 });
+render.bounds = {
+  min: { x: 0, y: 0 },
+  max: { x: canvasWidth, y: canvasHeight }
+};
 
 //  120hz simulation
 const runner = Runner.create({
@@ -42,11 +57,69 @@ World.add(engine.world, mouseConstraint);
 render.mouse = mouse;
 
 // world creation
-const ground = Bodies.rectangle(WIDTH / 2, HEIGHT + 20, WIDTH, 40, { isStatic: true });
-const leftWall = Bodies.rectangle(-20, HEIGHT / 2, 40, HEIGHT, { isStatic: true });
-const rightWall = Bodies.rectangle(WIDTH + 20, HEIGHT / 2, 40, HEIGHT, { isStatic: true });
-const ceiling = Bodies.rectangle(WIDTH / 2, -20, WIDTH, 40, { isStatic: true });
-World.add(engine.world, [ground, ceiling, leftWall, rightWall]);
+let ground;
+let leftWall;
+let rightWall;
+let ceiling;
+
+function rebuildBounds() {
+  if (ground) {
+    World.remove(engine.world, [ground, ceiling, leftWall, rightWall]);
+  }
+  ground = Bodies.rectangle(canvasWidth / 2, canvasHeight + 20, canvasWidth, 40, { isStatic: true });
+  leftWall = Bodies.rectangle(-20, canvasHeight / 2, 40, canvasHeight, { isStatic: true });
+  rightWall = Bodies.rectangle(canvasWidth + 20, canvasHeight / 2, 40, canvasHeight, { isStatic: true });
+  ceiling = Bodies.rectangle(canvasWidth / 2, -20, canvasWidth, 40, { isStatic: true });
+  World.add(engine.world, [ground, ceiling, leftWall, rightWall]);
+}
+
+rebuildBounds();
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function rescaleContactBodies(scaleX, scaleY) {
+  engine.world.bodies.forEach(body => {
+    if (!body.contact) return;
+    const halfWidth = (body.bounds.max.x - body.bounds.min.x) / 2;
+    const halfHeight = (body.bounds.max.y - body.bounds.min.y) / 2;
+    const newX = clamp(body.position.x * scaleX, halfWidth + 8, canvasWidth - halfWidth - 8);
+    const newY = clamp(body.position.y * scaleY, halfHeight + 8, canvasHeight - halfHeight - 8);
+    Body.setPosition(body, { x: newX, y: newY });
+  });
+}
+
+function handleResize() {
+  const prevWidth = canvasWidth;
+  const prevHeight = canvasHeight;
+  const newSize = computeCanvasSize();
+  if (!newSize || (Math.abs(newSize - prevWidth) < 1 && Math.abs(newSize - prevHeight) < 1)) {
+    return;
+  }
+
+  const scaleX = newSize / prevWidth;
+  const scaleY = newSize / prevHeight;
+
+  canvasWidth = newSize;
+  canvasHeight = newSize;
+
+  syncCanvasDimensions();
+
+  render.options.width = canvasWidth;
+  render.options.height = canvasHeight;
+  render.bounds.max.x = canvasWidth;
+  render.bounds.max.y = canvasHeight;
+  render.canvas.width = canvasWidth;
+  render.canvas.height = canvasHeight;
+
+  rescaleContactBodies(scaleX, scaleY);
+  rebuildBounds();
+}
+
+window.addEventListener('resize', () => {
+  window.requestAnimationFrame(handleResize);
+});
 
 // self explanatory >_<
 const CONTACTS = [
@@ -76,7 +149,7 @@ function preloadImages(callback) {
 function createBlocks() {
   CONTACTS.forEach(c => {
     const size = 100;
-    const posX = Math.random() * (WIDTH - size * 2) + size;
+    const posX = Math.random() * (canvasWidth - size * 2) + size;
     const posY = Math.random() * 200 + 50;
     const box = Bodies.rectangle(posX, posY, size, size, {
       restitution: 0.6,
@@ -143,11 +216,11 @@ Events.on(engine, "afterUpdate", () => {
   engine.world.bodies.forEach(body => {
     if (body.contact) {
       if (
-        body.position.x < -200 || body.position.x > WIDTH + 200 ||
-        body.position.y < -200 || body.position.y > HEIGHT + 200
+        body.position.x < -200 || body.position.x > canvasWidth + 200 ||
+        body.position.y < -200 || body.position.y > canvasHeight + 200
       ) {
         Matter.Body.setPosition(body, {
-          x: WIDTH / 2 + (Math.random() * 200 - 100),
+          x: canvasWidth / 2 + (Math.random() * 200 - 100),
           y: 100
         });
         Matter.Body.setVelocity(body, { x: 0, y: 0 });
@@ -400,4 +473,5 @@ popup.addEventListener("click", e => {
 preloadImages(() => {
   createBlocks();
 });
+
 
