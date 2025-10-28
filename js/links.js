@@ -5,13 +5,19 @@ const { Engine, Render, Runner, Bodies, Body, World, Mouse, MouseConstraint, Eve
 const canvas = document.getElementById("world");
 
 function computeCanvasSize() {
-  const minViewport = Math.min(window.innerWidth, window.innerHeight);
-  const size = Math.max(Math.min(minViewport * 0.85, 520), 260);
-  return Math.round(size);
+  const isMobile = window.innerWidth < 768; // breakpoint threshold
+
+  if (isMobile) {
+    const width = Math.min(window.innerWidth * 0.9, 400);
+    const height = width * 1.2; // taller aspect for phones
+    return { width: Math.round(width), height: Math.round(height) };
+  } else {
+    const size = Math.max(Math.min(window.innerHeight * 0.8, 520), 300);
+    return { width: Math.round(size), height: Math.round(size) }; // square for desktop
+  }
 }
 
-let canvasWidth = computeCanvasSize();
-let canvasHeight = canvasWidth;
+let { width: canvasWidth, height: canvasHeight } = computeCanvasSize();
 
 function syncCanvasDimensions() {
   canvas.width = canvasWidth;
@@ -93,16 +99,16 @@ function rescaleContactBodies(scaleX, scaleY) {
 function handleResize() {
   const prevWidth = canvasWidth;
   const prevHeight = canvasHeight;
-  const newSize = computeCanvasSize();
-  if (!newSize || (Math.abs(newSize - prevWidth) < 1 && Math.abs(newSize - prevHeight) < 1)) {
+  const { width: newW, height: newH } = computeCanvasSize();
+  if (!newW || !newH || (Math.abs(newW - prevWidth) < 1 && Math.abs(newH - prevHeight) < 1)) {
     return;
   }
 
-  const scaleX = newSize / prevWidth;
-  const scaleY = newSize / prevHeight;
+  const scaleX = newW / prevWidth;
+  const scaleY = newH / prevHeight;
 
-  canvasWidth = newSize;
-  canvasHeight = newSize;
+  canvasWidth = newW;
+  canvasHeight = newH;
 
   syncCanvasDimensions();
 

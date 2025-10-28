@@ -208,7 +208,7 @@ nav.dropdown a.active {
 /* --------------------------------------------
    Buttons (Shared)
 --------------------------------------------- */
-button:not(.menu-toggle),
+button,
 .ui-btn,
 .back-btn,
 #gravityBtn,
@@ -222,7 +222,7 @@ button:not(.menu-toggle),
   border-radius: 6px;
   box-shadow: 0 0 8px var(--accent-glow) inset;
 }
-button:not(.menu-toggle):hover,
+button:hover,
 .ui-btn:hover,
 .back-btn:hover,
 #gravityBtn:hover,
@@ -588,4 +588,6 @@ body.dark-mode .gate-overlay {
   outline: 2px solid var(--accent-main);
   outline-offset: 3px;
 }
+
+
 
