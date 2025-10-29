@@ -18,6 +18,7 @@ npm run dev     # local development
 npm run build   # production bundle
 npm run preview # preview the production build
 ```
+or just visit a.palmeirim.github.io
 
 ## Features
 
