@@ -12,7 +12,7 @@ const structure = {
 };
 
 const bootLines = [
-  "Antonio's Portfolio Terminal [Version 1.0.0]",
+  "unnecessary terminal [Version 1.0.0]",
   '(c) 2025 Antonio Palmeirim. All rights reserved.',
   '',
   'Starting services...',
