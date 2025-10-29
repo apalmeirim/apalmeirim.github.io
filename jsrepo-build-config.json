@@ -1,0 +1,19 @@
+{
+	"$schema": "https://unpkg.com/jsrepo@2.5.0/schemas/registry-config.json",
+	"readme": "README.md",
+	"dirs": [
+		"./src/components"
+	],
+	"doNotListBlocks": [],
+	"doNotListCategories": [],
+	"listBlocks": [],
+	"listCategories": [],
+	"excludeDeps": [],
+	"includeBlocks": [],
+	"includeCategories": [],
+	"includeFiles": [],
+	"excludeBlocks": [],
+	"excludeCategories": [],
+	"preview": false,
+	"includeDocs": false
+}

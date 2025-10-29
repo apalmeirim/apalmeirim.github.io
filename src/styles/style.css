@@ -3,20 +3,20 @@
 --------------------------------------------- */
 @font-face {
   font-family: 'Press Start 2P';
-  src: url('../assets/fonts/PressStart2P-Regular.ttf') format('truetype');
+  src: url('/assets/fonts/PressStart2P-Regular.ttf') format('truetype');
 }
 @font-face {
   font-family: 'VT323';
-  src: url('../assets/fonts/VT323-Regular.ttf') format('truetype');
+  src: url('/assets/fonts/VT323-Regular.ttf') format('truetype');
 }
 
 /* --------------------------------------------
    Color Palette (Light Mode Defaults)
 --------------------------------------------- */
 :root {
-  --text-color: #000;
-  --bg-color: #f8f6f1;
-  --panel-bg: #fdfdfd;
+  --text-color: #ffffff;
+  --bg-color: rgba(8, 8, 12, 0.85);
+  --panel-bg: rgba(20, 20, 28, 0.9);
 
   /* mint greens */
   --mint: #7ab69d;
@@ -35,17 +35,16 @@
 }
 
 /* --------------------------------------------
-   Dark Mode
+   Dark Palette Alias
 --------------------------------------------- */
 body.dark-mode {
-  --text-color: #f8f6f1;
-  --bg-color: #1a1a1a;
-  --panel-bg: #222;
-
-  --accent-main: var(--orange);
-  --accent-alt: var(--mint);
-  --accent-border: var(--orange-light);
-  --accent-glow: var(--orange-light);
+  --text-color: #ffffff;
+  --bg-color: rgba(8, 8, 12, 0.85);
+  --panel-bg: rgba(20, 20, 28, 0.9);
+  --accent-main: #7ab69d;
+  --accent-alt: #f8b88b;
+  --accent-border: #b6e2d3;
+  --accent-glow: #c8f4e3;
 }
 
 /* --------------------------------------------
@@ -55,11 +54,60 @@ body.dark-mode {
 
 body {
   font-family: VT323, monospace;
-  background: var(--bg-color);
+  background: transparent;
   color: var(--text-color);
   line-height: 1.6;
   padding: 20px;
   text-align: center;
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+}
+
+.app-shell__background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.app-shell__background .dither-container {
+  width: 100%;
+  height: 100%;
+}
+
+.app-shell__content {
+  position: relative;
+  z-index: 1;
+}
+
+.landing-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background: #0d0d0d;
+  padding: 40px 20px;
+}
+
+.landing-page__link {
+  text-decoration: none;
+}
+
+.landing-page__image {
+  max-width: 247px;
+  height: auto;
+}
+
+.landing-page footer {
+  margin-top: 47px;
+}
+
+.landing-page footer p {
+  color: #ffffff;
 }
 
 /* --------------------------------------------
@@ -155,6 +203,12 @@ nav.dropdown ul {
   flex-direction: column;
   gap: 10px;
   min-width: 180px;
+}
+
+.menu-toggle-switch {
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
 }
 
 nav.dropdown a {

@@ -1,37 +1,31 @@
 # Interactive Portfolio
 
-Welcome to my personal portfolio — a **retro-inspired interactive website** built to showcase my work and keep my creativity alive.
+React-powered refresh of my retro-styled portfolio. All of the original aesthetics remain, but the site now runs as a single-page React application with client-side routing and componentised interactions.
 
-Features include:
-- Chrome-based mini-game.  
-- Terminal-like directory.
-- Physics-based contact page.
-- (more incoming).
+## Stack
 
----
+- React 19 + Vite bundler
+- React Router for page navigation
+- Matter.js for the contact physics sandbox
+- Canvas API for the Scratch Cat mini-game
+- Custom fonts served from `/public/assets`
 
-## About
+## Getting Started
 
-This project is my way of staying active and motivated as a developer — blending design, code, and creativity into something fun.  
-It’s a space that evolves with me as I keep learning and building.
+```bash
+npm install
+npm run dev     # local development
+npm run build   # production bundle
+npm run preview # preview the production build
+```
 
----
+## Features
 
-## Built With
-
-- HTML, CSS, JavaScript (no frameworks)
-- Matter.js (physics for contact page)
-- Canvas API (custom game + visuals)
-- Retro pixel fonts & terminal aesthetics
-
----
-
-## 📬 Contact
-
-- [**LinkedIn**](https://www.linkedin.com/in/antonio-palmeirim-912200265/)
-- [**Email**](mailto:apalmeirim03@gmail.com)
+- Landing splash that drops you into the main hub.
+- Terminal overlay with navigation commands and animated boot sequence.
+- Canvas runner mini-game in a modal gate.
+- Physics-based contact blocks with gravity toggle and clipboard helpers.
 
 ---
 
 © 2025 Antonio Palmeirim. All rights reserved.
-
