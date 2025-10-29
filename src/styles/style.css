@@ -18,20 +18,18 @@
   --bg-color: rgba(8, 8, 12, 0.85);
   --panel-bg: rgba(20, 20, 28, 0.9);
 
-  /* mint greens */
-  --mint: #7ab69d;
-  --mint-light: #b6e2d3;
-  --mint-glow: #c8f4e3;
+  /* primary accent (bright blue) */
+  --accent-main: #0a84ff;
+  --accent-alt: #4fa3ff;
+  --accent-border: #82bfff;
+  --accent-glow: #c2dcff;
 
-  /* pastel oranges */
-  --orange: #f8b88b;
-  --orange-light: #fde3ca;
-
-  /* shared accent logic */
-  --accent-main: var(--mint);
-  --accent-alt: var(--orange);
-  --accent-border: var(--mint-light);
-  --accent-glow: var(--mint-glow);
+  /* legacy aliases mapped to accent */
+  --mint: var(--accent-main);
+  --mint-light: var(--accent-border);
+  --mint-glow: var(--accent-glow);
+  --orange: var(--accent-main);
+  --orange-light: var(--accent-border);
 }
 
 /* --------------------------------------------
@@ -41,10 +39,10 @@ body.dark-mode {
   --text-color: #ffffff;
   --bg-color: rgba(8, 8, 12, 0.85);
   --panel-bg: rgba(20, 20, 28, 0.9);
-  --accent-main: #7ab69d;
-  --accent-alt: #f8b88b;
-  --accent-border: #b6e2d3;
-  --accent-glow: #c8f4e3;
+  --accent-main: #0a84ff;
+  --accent-alt: #4fa3ff;
+  --accent-border: #82bfff;
+  --accent-glow: #c2dcff;
 }
 
 /* --------------------------------------------
@@ -302,6 +300,29 @@ button:hover,
 }
 #popupButtons button:active { transform: scale(0.96); }
 
+.home-header {
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.home-header__title {
+  position: relative;
+  margin: 0 auto;
+  width: min(92vw, 720px);
+  height: clamp(160px, 32vw, 280px);
+}
+
+.home-header__title .ascii-text-container {
+  position: absolute !important;
+  inset: 0;
+}
+
+.home-header__title canvas,
+.home-header__title pre {
+  width: 100%;
+  height: 100%;
+}
+
 /* Home hero buttons */
 .home-layout {
   display: flex;
@@ -426,9 +447,13 @@ body.modal-open {
 .hint,
 .gate-hint {
   font-family: 'VT323', monospace;
-  color: var(--accent-main);
+  color: var(--text-color);
   font-size: 20px;
   margin-top: 8px;
+}
+
+.contact-controls {
+  margin-top: 24px;
 }
 
 /* --------------------------------------------

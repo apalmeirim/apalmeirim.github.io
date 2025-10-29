@@ -5,6 +5,7 @@ import TerminalOverlay from '../components/TerminalOverlay.jsx';
 import Footer from '../components/Footer.jsx';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { useTheme } from '../context/ThemeContext.jsx';
+import ASCIIText from '../components/ASCIIText.jsx';
 
 export default function MainPage() {
   const [terminalOpen, setTerminalOpen] = useState(false);
@@ -15,13 +16,15 @@ export default function MainPage() {
 
   return (
     <>
-      <header>
+      <header className="home-header">
         <div className="navbar-spacer" aria-hidden="true" />
+        <div className="home-header__title" role="img" aria-label="_main">
+          <ASCIIText text="_main" enableWaves asciiFontSize={8} />
+        </div>
         <RunnerGate open={runnerOpen} onClose={() => setRunnerOpen(false)} />
       </header>
       <main>
         <section id="home">
-          <h1>_main</h1>
           <div className="home-layout">
             <div className="home-links">
               <button type="button" id="showcaseBtn" className="home-link">
