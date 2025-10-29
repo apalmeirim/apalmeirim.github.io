@@ -5,6 +5,7 @@ export default function RunnerGate({ open, onClose }) {
   const overlayRef = useRef(null);
   const canvasRef = useRef(null);
   const scoreRef = useRef(null);
+  const highScoreRef = useRef(null);
   const runnerRef = useRef(null);
   const closeRef = useRef(onClose);
 
@@ -17,6 +18,7 @@ export default function RunnerGate({ open, onClose }) {
     runnerRef.current = createRunnerGame({
       canvas: canvasRef.current,
       scoreEl: scoreRef.current,
+      highScoreEl: highScoreRef.current,
       onRequestClose: () => closeRef.current?.(),
     });
     return () => {
@@ -71,6 +73,9 @@ export default function RunnerGate({ open, onClose }) {
           <div className="hud">
             <div className="score">
               SCORE: <span id="scoreVal" ref={scoreRef}>0</span>
+            </div>
+            <div className="score">
+              HIGH: <span id="highScoreVal" ref={highScoreRef}>0</span>
             </div>
           </div>
         </div>

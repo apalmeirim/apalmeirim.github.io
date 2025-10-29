@@ -19,7 +19,7 @@ export default function MainPage() {
       <header className="home-header">
         <div className="navbar-spacer" aria-hidden="true" />
         <div className="home-header__title" role="img" aria-label="_main">
-          <ASCIIText text="_main" enableWaves asciiFontSize={8} />
+          <ASCIIText text="_main" enableWaves asciiFontSize={4}/>
         </div>
         <RunnerGate open={runnerOpen} onClose={() => setRunnerOpen(false)} />
       </header>

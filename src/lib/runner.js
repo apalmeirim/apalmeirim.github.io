@@ -1,7 +1,30 @@
 const IMG = new Image();
 IMG.src = '/assets/images/scratch_cat.png';
 
-export function createRunnerGame({ canvas, scoreEl, onRequestClose } = {}) {
+const STORAGE_KEY = 'runner-high-score';
+
+const readStoredHighScore = () => {
+  if (typeof window === 'undefined') return 0;
+  try {
+    const raw = window.localStorage?.getItem(STORAGE_KEY);
+    if (!raw) return 0;
+    const value = Number.parseInt(raw, 10);
+    return Number.isFinite(value) && value > 0 ? value : 0;
+  } catch {
+    return 0;
+  }
+};
+
+const writeStoredHighScore = (value) => {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage?.setItem(STORAGE_KEY, String(value));
+  } catch {
+    /* ignore */
+  }
+};
+
+export function createRunnerGame({ canvas, scoreEl, highScoreEl, onRequestClose } = {}) {
   if (!canvas || !scoreEl) {
     return {
       open: () => {},
@@ -41,10 +64,6 @@ export function createRunnerGame({ canvas, scoreEl, onRequestClose } = {}) {
   };
 
   let theme = getThemeColors();
-  const observer = new MutationObserver(() => {
-    theme = getThemeColors();
-  });
-  observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
   let W = canvas.width;
   let H = canvas.height;
@@ -67,6 +86,21 @@ export function createRunnerGame({ canvas, scoreEl, onRequestClose } = {}) {
   const aabb = (ax, ay, aw, ah, bx, by, bw, bh) =>
     ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
 
+  let highScore = readStoredHighScore();
+
+  const updateHighScoreDisplay = () => {
+    if (highScoreEl) {
+      highScoreEl.textContent = highScore.toString();
+      highScoreEl.style.color = highScore > 0 ? theme.mint : theme.text;
+    }
+  };
+
+  const observer = new MutationObserver(() => {
+    theme = getThemeColors();
+    updateHighScoreDisplay();
+  });
+  observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
   function reset(full = true) {
     if (!STATE.active) return;
     cancelAnimationFrame(STATE.loopId);
@@ -83,6 +117,7 @@ export function createRunnerGame({ canvas, scoreEl, onRequestClose } = {}) {
     if (full) STATE.score = 0;
     scoreEl.textContent = STATE.score.toString();
     scoreEl.style.color = theme.mint;
+    updateHighScoreDisplay();
     for (let i = 0; i < 3; i += 1) {
       clouds.push({ x: Math.random() * W, y: 30 + Math.random() * 60, s: 0.2 + Math.random() * 0.6 });
     }
@@ -197,6 +232,14 @@ export function createRunnerGame({ canvas, scoreEl, onRequestClose } = {}) {
     if (STATE.running && frame % 4 === 0) {
       STATE.score += 1;
       scoreEl.textContent = STATE.score.toString();
+      if (STATE.score > highScore) {
+        highScore = STATE.score;
+        writeStoredHighScore(highScore);
+        if (highScoreEl) {
+          highScoreEl.textContent = highScore.toString();
+          highScoreEl.style.color = theme.mint;
+        }
+      }
     }
     // collision detection
     for (const o of obstacles) {
@@ -212,6 +255,7 @@ export function createRunnerGame({ canvas, scoreEl, onRequestClose } = {}) {
         STATE.over = true;
         STATE.running = false;
         scoreEl.style.color = theme.orange;
+        updateHighScoreDisplay();
         break;
       }
     }
@@ -306,6 +350,7 @@ export function createRunnerGame({ canvas, scoreEl, onRequestClose } = {}) {
   canvas.addEventListener('pointerdown', onPointer, { passive: true });
   window.addEventListener('resize', handleResize);
   scoreEl.textContent = '0';
+  updateHighScoreDisplay();
 
   return {
     open() {

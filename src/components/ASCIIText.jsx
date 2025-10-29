@@ -387,7 +387,7 @@ class CanvAscii {
 export default function ASCIIText({
   text = 'David!',
   asciiFontSize = 8,
-  textFontSize = 200,
+  textFontSize = 140,
   textColor = '#fdf9f3',
   planeBaseHeight = 8,
   enableWaves = true
@@ -492,16 +492,12 @@ export default function ASCIIText({
           position: absolute;
           left: 0;
           top: 0;
-          background-image: radial-gradient(circle, #0a84ff 0%, #4fa3ff 45%, #82bfff 100%);
+          background-image: radial-gradient(circle, #ff6188 0%, #fc9867 50%, #ffd866 100%);
           background-attachment: fixed;
           -webkit-text-fill-color: transparent;
           -webkit-background-clip: text;
           z-index: 9;
-          mix-blend-mode: normal;
-        }
-
-        .ascii-text-container {
-          pointer-events: none;
+          mix-blend-mode: difference;
         }
       `}</style>
     </div>

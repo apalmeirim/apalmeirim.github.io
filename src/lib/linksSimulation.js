@@ -22,6 +22,8 @@ const CONTACTS = [
     icon: '/assets/images/linkedin_icon.png',
     link: 'https://www.linkedin.com/in/antonio-palmeirim-912200265/',
   },
+  { label: 'Twitter', icon: '/assets/images/twitter_icon.png', link: 'https://x.com/antonioplr_' },
+  { label: 'Spotify', icon: '/assets/images/spotify_icon.png', link: 'https://open.spotify.com/user/5qdlubext6b85s81q0mm2mkx2?si=82694498dcc74c3f.com/antonioplr/' },
 ];
 
 const loadedImages = {};
@@ -328,7 +330,7 @@ export function createLinksSimulation({
         restitution: 0.6,
         frictionAir: 0.02,
         render: {
-          fillStyle: '#eeb288ff',
+          fillStyle: '#ffffffff',
           strokeStyle: '#000000ff',
           lineWidth: 2,
         },
