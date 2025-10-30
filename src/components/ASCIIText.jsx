@@ -93,7 +93,7 @@ class AsciiFilter {
   }
 
   reset() {
-    this.context.font = `500 ${this.fontSize}px ${this.fontFamily}`;
+    this.context.font = `${this.fontSize}px ${this.fontFamily}`;
     const charWidth = this.context.measureText('A').width;
 
     this.cols = Math.floor(this.width / (this.fontSize * (charWidth / this.fontSize)));
@@ -102,7 +102,6 @@ class AsciiFilter {
     this.canvas.width = this.cols;
     this.canvas.height = this.rows;
     this.pre.style.fontFamily = this.fontFamily;
-    this.pre.style.fontWeight = '500';
     this.pre.style.fontSize = `${this.fontSize}px`;
     this.pre.style.margin = '0';
     this.pre.style.padding = '0';
@@ -294,7 +293,7 @@ class CanvAscii {
     this.renderer.setClearColor(0x000000, 0);
 
     this.filter = new AsciiFilter(this.renderer, {
-      fontFamily: "'IBM Plex Mono', monospace",
+      fontFamily: 'IBM Plex Mono',
       fontSize: this.asciiFontSize,
       invert: true
     });
@@ -399,12 +398,35 @@ export default function ASCIIText({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const { width, height } = containerRef.current.getBoundingClientRect();
-
+    let disposed = false;
     let resizeObserver;
     let intersectionObserver;
 
-    const startResizeObserver = () => {
+    const waitForFonts = async () => {
+      if (typeof document === 'undefined') return;
+      const { fonts } = document;
+      if (!fonts || !fonts.load) return;
+
+      const requests = [
+        fonts.load('500 12px "IBM Plex Mono"'),
+        fonts.load(`600 ${textFontSize}px "IBM Plex Mono"`)
+      ];
+
+      if (asciiFontSize) {
+        requests.push(fonts.load(`500 ${asciiFontSize}px "IBM Plex Mono"`));
+      }
+
+      try {
+        await Promise.all(requests);
+        if (fonts.ready) {
+          await fonts.ready;
+        }
+      } catch (_) {
+        // Font loading failures fall back to system metrics.
+      }
+    };
+
+    const setupResizeObserver = () => {
       if (resizeObserver || !containerRef.current) return;
 
       resizeObserver = new ResizeObserver(entries => {
@@ -418,7 +440,10 @@ export default function ASCIIText({
       resizeObserver.observe(containerRef.current);
     };
 
-    const initializeAscii = (w, h) => {
+    const initAscii = async (w, h) => {
+      await waitForFonts();
+      if (disposed || !containerRef.current) return;
+
       if (asciiRef.current) {
         asciiRef.current.dispose();
         asciiRef.current = null;
@@ -431,24 +456,10 @@ export default function ASCIIText({
         h
       );
       asciiRef.current.load();
-
-      if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
-        document.fonts
-          .ready
-          .then(() => {
-            if (!asciiRef.current || !containerRef.current) return;
-            const rect = containerRef.current.getBoundingClientRect();
-            if (rect.width > 0 && rect.height > 0) {
-              asciiRef.current.setSize(rect.width, rect.height);
-            }
-          })
-          .catch(() => {
-            // Ignore readiness errors; ASCII grid will stay with fallback metrics.
-          });
-      }
-
-      startResizeObserver();
+      setupResizeObserver();
     };
+
+    const { width, height } = containerRef.current.getBoundingClientRect();
 
     if (width === 0 || height === 0) {
       intersectionObserver = new IntersectionObserver(
@@ -459,7 +470,7 @@ export default function ASCIIText({
             entry.boundingClientRect.height > 0
           ) {
             const { width: w, height: h } = entry.boundingClientRect;
-            initializeAscii(w, h);
+            initAscii(w, h);
             if (intersectionObserver) {
               intersectionObserver.disconnect();
               intersectionObserver = null;
@@ -470,31 +481,24 @@ export default function ASCIIText({
       );
 
       intersectionObserver.observe(containerRef.current);
-
-      return () => {
-        if (intersectionObserver) {
-          intersectionObserver.disconnect();
-        }
-        if (resizeObserver) {
-          resizeObserver.disconnect();
-        }
-        if (asciiRef.current) {
-          asciiRef.current.dispose();
-        }
-      };
+    } else {
+      initAscii(width, height);
     }
 
-    initializeAscii(width, height);
-
     return () => {
+      disposed = true;
+
       if (intersectionObserver) {
         intersectionObserver.disconnect();
       }
+
       if (resizeObserver) {
         resizeObserver.disconnect();
       }
+
       if (asciiRef.current) {
         asciiRef.current.dispose();
+        asciiRef.current = null;
       }
     };
   }, [text, asciiFontSize, textFontSize, textColor, planeBaseHeight, enableWaves]);
@@ -510,8 +514,6 @@ export default function ASCIIText({
       }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&display=swap');
-
         .ascii-text-container canvas {
           position: absolute;
           left: 0;
@@ -536,8 +538,6 @@ export default function ASCIIText({
           position: absolute;
           left: 0;
           top: 0;
-          font-family: 'IBM Plex Mono', monospace;
-          font-weight: 500;
           background-image: radial-gradient(circle, #ff6188 0%, #fc9867 50%, #ffd866 100%);
           background-attachment: fixed;
           -webkit-text-fill-color: transparent;
