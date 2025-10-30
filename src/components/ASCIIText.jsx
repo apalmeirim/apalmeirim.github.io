@@ -93,7 +93,7 @@ class AsciiFilter {
   }
 
   reset() {
-    this.context.font = `${this.fontSize}px ${this.fontFamily}`;
+    this.context.font = `500 ${this.fontSize}px ${this.fontFamily}`;
     const charWidth = this.context.measureText('A').width;
 
     this.cols = Math.floor(this.width / (this.fontSize * (charWidth / this.fontSize)));
@@ -102,6 +102,7 @@ class AsciiFilter {
     this.canvas.width = this.cols;
     this.canvas.height = this.rows;
     this.pre.style.fontFamily = this.fontFamily;
+    this.pre.style.fontWeight = '500';
     this.pre.style.fontSize = `${this.fontSize}px`;
     this.pre.style.margin = '0';
     this.pre.style.padding = '0';
@@ -293,7 +294,7 @@ class CanvAscii {
     this.renderer.setClearColor(0x000000, 0);
 
     this.filter = new AsciiFilter(this.renderer, {
-      fontFamily: 'IBM Plex Mono',
+      fontFamily: "'IBM Plex Mono', monospace",
       fontSize: this.asciiFontSize,
       invert: true
     });
@@ -400,55 +401,98 @@ export default function ASCIIText({
 
     const { width, height } = containerRef.current.getBoundingClientRect();
 
+    let resizeObserver;
+    let intersectionObserver;
+
+    const startResizeObserver = () => {
+      if (resizeObserver || !containerRef.current) return;
+
+      resizeObserver = new ResizeObserver(entries => {
+        if (!entries[0] || !asciiRef.current) return;
+        const { width: w, height: h } = entries[0].contentRect;
+        if (w > 0 && h > 0) {
+          asciiRef.current.setSize(w, h);
+        }
+      });
+
+      resizeObserver.observe(containerRef.current);
+    };
+
+    const initializeAscii = (w, h) => {
+      if (asciiRef.current) {
+        asciiRef.current.dispose();
+        asciiRef.current = null;
+      }
+
+      asciiRef.current = new CanvAscii(
+        { text, asciiFontSize, textFontSize, textColor, planeBaseHeight, enableWaves },
+        containerRef.current,
+        w,
+        h
+      );
+      asciiRef.current.load();
+
+      if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
+        document.fonts
+          .ready
+          .then(() => {
+            if (!asciiRef.current || !containerRef.current) return;
+            const rect = containerRef.current.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+              asciiRef.current.setSize(rect.width, rect.height);
+            }
+          })
+          .catch(() => {
+            // Ignore readiness errors; ASCII grid will stay with fallback metrics.
+          });
+      }
+
+      startResizeObserver();
+    };
+
     if (width === 0 || height === 0) {
-      const observer = new IntersectionObserver(
+      intersectionObserver = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting && entry.boundingClientRect.width > 0 && entry.boundingClientRect.height > 0) {
+          if (
+            entry.isIntersecting &&
+            entry.boundingClientRect.width > 0 &&
+            entry.boundingClientRect.height > 0
+          ) {
             const { width: w, height: h } = entry.boundingClientRect;
-
-            asciiRef.current = new CanvAscii(
-              { text, asciiFontSize, textFontSize, textColor, planeBaseHeight, enableWaves },
-              containerRef.current,
-              w,
-              h
-            );
-            asciiRef.current.load();
-
-            observer.disconnect();
+            initializeAscii(w, h);
+            if (intersectionObserver) {
+              intersectionObserver.disconnect();
+              intersectionObserver = null;
+            }
           }
         },
         { threshold: 0.1 }
       );
 
-      observer.observe(containerRef.current);
+      intersectionObserver.observe(containerRef.current);
 
       return () => {
-        observer.disconnect();
+        if (intersectionObserver) {
+          intersectionObserver.disconnect();
+        }
+        if (resizeObserver) {
+          resizeObserver.disconnect();
+        }
         if (asciiRef.current) {
           asciiRef.current.dispose();
         }
       };
     }
 
-    asciiRef.current = new CanvAscii(
-      { text, asciiFontSize, textFontSize, textColor, planeBaseHeight, enableWaves },
-      containerRef.current,
-      width,
-      height
-    );
-    asciiRef.current.load();
-
-    const ro = new ResizeObserver(entries => {
-      if (!entries[0] || !asciiRef.current) return;
-      const { width: w, height: h } = entries[0].contentRect;
-      if (w > 0 && h > 0) {
-        asciiRef.current.setSize(w, h);
-      }
-    });
-    ro.observe(containerRef.current);
+    initializeAscii(width, height);
 
     return () => {
-      ro.disconnect();
+      if (intersectionObserver) {
+        intersectionObserver.disconnect();
+      }
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
       if (asciiRef.current) {
         asciiRef.current.dispose();
       }
@@ -492,6 +536,8 @@ export default function ASCIIText({
           position: absolute;
           left: 0;
           top: 0;
+          font-family: 'IBM Plex Mono', monospace;
+          font-weight: 500;
           background-image: radial-gradient(circle, #ff6188 0%, #fc9867 50%, #ffd866 100%);
           background-attachment: fixed;
           -webkit-text-fill-color: transparent;
