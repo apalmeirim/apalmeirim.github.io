@@ -113,7 +113,7 @@ body {
 --------------------------------------------- */
 h1, h2 {
   font-family: 'Press Start 2P', cursive;
-  color: var(--accent-main);
+  color: var(--tex);
 }
 h1 { font-size: 18px; margin-bottom: 20px; }
 h2 { font-size: 16px; margin: 40px 0 20px; }
@@ -705,6 +705,107 @@ body.dark-mode .gate-overlay {
   width: 100%;
   border: none;
 }
+
+/* Song Showcase Archive */
+
+.song-archive {
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  margin-inline: auto;
+}
+
+.song-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+  justify-items: center;
+}
+
+.song-mini-block {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  border: none;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.song-mini-block:hover,
+.song-mini-block.active,
+.song-mini-block:focus-visible {
+  transform: scale(1.08);
+  background: none;
+  box-shadow: none;
+}
+
+.song-mini-block:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 3px;
+}
+
+.mini-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.mini-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  padding: 0.5rem;
+}
+
+.song-mini-block:hover .mini-overlay,
+.song-mini-block.active .mini-overlay,
+.song-mini-block:focus-visible .mini-overlay {
+  opacity: 1;
+}
+
+.mini-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: center;
+  width: 100%;
+}
+
+.mini-date {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mini-title {
+  font-size: 0.65rem;
+  line-height: 1.2;
+  white-space: normal;
+  word-break: break-word;
+  padding: 0 0.25rem;
+}
+
+.playlist-link {
+  margin-top: 1.5rem;
+}
+
+
 
 
 

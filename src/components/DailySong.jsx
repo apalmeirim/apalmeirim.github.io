@@ -29,6 +29,7 @@ export default function DailySong() {
 
   return (
     <div className="daily-song">
+      <h2>daily song</h2>
       {trackId && (
         <iframe
           style={{ borderRadius: "12px" }}
