@@ -143,6 +143,7 @@ footer { margin-top: 60px; font-size: 14px; color: var(--text-color); }
   gap: 12px;
   justify-content: center;
   margin: 0 auto;
+  padding: 0 28px;
 }
 
 /* Hamburger — flat lines, no border box */
@@ -262,7 +263,6 @@ nav.dropdown a.active {
 --------------------------------------------- */
 button,
 .ui-btn,
-.back-btn,
 #gravityBtn,
 #popupButtons button {
   font-family: 'Press Start 2P', cursive;
@@ -276,7 +276,6 @@ button,
 }
 button:hover,
 .ui-btn:hover,
-.back-btn:hover,
 #gravityBtn:hover,
 #popupButtons button:hover {
   background: var(--accent-alt);
@@ -288,11 +287,35 @@ button:hover,
   padding: 6px 10px;
   margin-bottom: 10px;
 }
-.back-btn,
 .ui-btn,
 #popupButtons button {
   padding: 8px 14px;
   font-size: 10px;
+}
+
+.back-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 24px;
+  padding: 4px 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  box-shadow: none !important;
+  border-radius: 0;
+  text-decoration: none;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(calc(-50% - 2px));
+  line-height: 1;
+}
+
+.back-btn:hover,
+.back-btn:focus-visible {
+  color: var(--accent-main);
+  outline: none;
 }
 #popupButtons button {
   padding: 12px 24px;

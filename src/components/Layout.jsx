@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import Navbar from './Navbar.jsx';
 import Dither from './Dither/Dither.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
@@ -8,6 +8,7 @@ export default function Layout() {
   const waveColor = isDark ? [0.2, 0.2, 0.2] : [0.5, 0.5, 0.5];
   const location = useLocation();
   const hideNavbar = location.pathname === '/main';
+  const showBackButton = location.pathname !== '/main';
 
   return (
     <div className="app-shell">
@@ -24,7 +25,7 @@ export default function Layout() {
         />
       </div>
       <div className="app-shell__content">
-        {!hideNavbar && <Navbar />}
+        {!hideNavbar && <Navbar showBackButton={showBackButton} />}
         <Outlet />
       </div>
     </div>
