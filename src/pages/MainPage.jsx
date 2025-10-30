@@ -28,9 +28,9 @@ export default function MainPage() {
         <section id="home">
           <div className="home-layout">
             <div className="home-links">
-              <button type="button" id="showcaseBtn" className="home-link">
+              <Link to="/showcase" id="aboutBtn" className="home-link">
                 showcase
-              </button>
+              </Link>
               <Link to="/links" id="linksBtn" className="home-link">
                 links
               </Link>

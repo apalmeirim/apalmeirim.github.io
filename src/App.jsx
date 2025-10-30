@@ -6,6 +6,7 @@ import MainPage from './pages/MainPage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 import ProjectsPage from './pages/ProjectsPage.jsx';
 import LinksPage from './pages/LinksPage.jsx';
+import ShowcasePage from "./pages/ShowcasePage.jsx";
 
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/links" element={<LinksPage />} />
+          <Route path="/showcase" element={<ShowcasePage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
