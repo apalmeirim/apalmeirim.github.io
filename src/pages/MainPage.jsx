@@ -60,10 +60,6 @@ export default function MainPage() {
             </button>
           </div>
         </section>
-        <section id="daily-song-test" style={{ textAlign: "center", marginTop: "3rem" }}>
-          <h2>Daily Song 🎶</h2>
-          <DailySong />
-        </section>
       </main>
       <TerminalOverlay open={terminalOpen} onClose={() => setTerminalOpen(false)} />
       <Footer>
