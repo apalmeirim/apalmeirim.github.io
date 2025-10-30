@@ -6,6 +6,7 @@ import Footer from '../components/Footer.jsx';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { useTheme } from '../context/ThemeContext.jsx';
 import ASCIIText from '../components/ASCIIText.jsx';
+import DailySong from '../components/DailySong.jsx';
 
 export default function MainPage() {
   const [terminalOpen, setTerminalOpen] = useState(false);
@@ -58,6 +59,10 @@ export default function MainPage() {
               &gt;_
             </button>
           </div>
+        </section>
+        <section id="daily-song-test" style={{ textAlign: "center", marginTop: "3rem" }}>
+          <h2>Daily Song 🎶</h2>
+          <DailySong />
         </section>
       </main>
       <TerminalOverlay open={terminalOpen} onClose={() => setTerminalOpen(false)} />
