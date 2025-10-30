@@ -1,16 +1,10 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import RunnerGate from '../components/RunnerGate.jsx';
-import TerminalOverlay from '../components/TerminalOverlay.jsx';
 import Footer from '../components/Footer.jsx';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { useTheme } from '../context/ThemeContext.jsx';
 import ASCIIText from '../components/ASCIIText.jsx';
-import DailySong from '../components/DailySong.jsx';
 
 export default function MainPage() {
-  const [terminalOpen, setTerminalOpen] = useState(false);
-  const [runnerOpen, setRunnerOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
 
   usePageTitle('_main');
@@ -22,7 +16,6 @@ export default function MainPage() {
         <div className="home-header__title" role="img" aria-label="_main">
           <ASCIIText text="_main" enableWaves asciiFontSize={4}/>
         </div>
-        <RunnerGate open={runnerOpen} onClose={() => setRunnerOpen(false)} />
       </header>
       <main>
         <section id="home">
@@ -41,38 +34,20 @@ export default function MainPage() {
                 about me
               </Link>
             </div>
-            <button
-              type="button"
-              id="playGameBtn"
-              className="home-link runner-link"
-              onClick={() => setRunnerOpen(true)}
-            >
-              runner.exe
-            </button>
-            <button
-              type="button"
-              id="openTerminalBtn"
-              className="home-link terminal-link"
-              aria-haspopup="dialog"
-              onClick={() => setTerminalOpen(true)}
-            >
-              &gt;_
-            </button>
           </div>
         </section>
       </main>
-      <TerminalOverlay open={terminalOpen} onClose={() => setTerminalOpen(false)} />
       <Footer>
         <div className="footer-controls">
           <button
             type="button"
             id="mainThemeToggle"
-            className="toggle-switch"
+            className={`theme-toggle-btn ${isDark ? 'dark' : 'light'}`}
             aria-pressed={isDark}
-            aria-label="Toggle wave theme"
+            aria-label="Toggle background theme"
             onClick={toggleTheme}
           >
-            <span className="toggle-thumb" />
+            {isDark ? 'dark' : 'light'}
           </button>
         </div>
       </Footer>

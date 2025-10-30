@@ -85,14 +85,12 @@ export default function Navbar({ showBackButton = false }) {
               <div className="menu-toggle-switch">
                 <button
                   type="button"
-                  className="toggle-switch"
+                  className={`theme-toggle-btn ${isDark ? 'dark' : 'light'}`}
                   aria-pressed={isDark}
-                  aria-label="Toggle wave theme"
-                  onClick={() => {
-                    toggleTheme();
-                  }}
+                  aria-label="Toggle background theme"
+                  onClick={toggleTheme}
                 >
-                  <span className="toggle-thumb" />
+                  {isDark ? 'dark' : 'light'}
                 </button>
               </div>
             </li>
