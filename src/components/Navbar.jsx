@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext.jsx';
 
 const navLinks = [
@@ -12,6 +12,7 @@ const navLinks = [
 export default function Navbar({ showBackButton = false }) {
   const [open, setOpen] = useState(false);
   const menuToggleRef = useRef(null);
+  const navigate = useNavigate();
   const menuRef = useRef(null);
   const location = useLocation();
   const { toggleTheme, isDark } = useTheme();
@@ -40,7 +41,15 @@ export default function Navbar({ showBackButton = false }) {
     <div id="navbar-container">
       <div className="navbar">
         {showBackButton && (
-          <Link to="/main" className="back-btn" aria-label="Back to main page">
+          <Link
+            to="#back"
+            className="back-btn"
+            aria-label="Go back"
+            onClick={(event) => {
+              event.preventDefault();
+              navigate(-1);
+            }}
+          >
             {'<'}
           </Link>
         )}
@@ -79,19 +88,11 @@ export default function Navbar({ showBackButton = false }) {
               </li>
             ))}
             <li>
-              <hr className="menu-sep" />
-            </li>
-            <li>
               <div className="menu-toggle-switch">
-                <button
-                  type="button"
-                  className={`theme-toggle-btn ${isDark ? 'dark' : 'light'}`}
-                  aria-pressed={isDark}
-                  aria-label="Toggle background theme"
-                  onClick={toggleTheme}
-                >
-                  {isDark ? 'dark' : 'light'}
-                </button>
+                <label className="toggle-switch" aria-label="Toggle background theme">
+                  <input type="checkbox" checked={!isDark} onChange={toggleTheme} />
+                  <span className="toggle-switch__slider" aria-hidden="true" />
+                </label>
               </div>
             </li>
           </ul>

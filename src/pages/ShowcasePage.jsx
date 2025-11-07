@@ -15,6 +15,15 @@ export default function Showcase() {
       <main className={`showcase-main ${isDark ? "dark" : "light"}`}>
         <DailySong />
         <SongArchive />
+
+        <section className="photo-dump-teaser">
+          <h2 className="photo-dump-heading">
+            <Link to="/under-construction" className="photo-dump-heading__link">
+              photo dump
+            </Link>
+          </h2>
+        </section>
+
         </main>
 
       <Footer />

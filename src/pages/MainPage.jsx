@@ -18,6 +18,7 @@ export default function MainPage() {
         </div>
       </header>
       <main>
+
         <section id="home">
           <div className="home-layout">
             <div className="home-links">
@@ -39,16 +40,10 @@ export default function MainPage() {
       </main>
       <Footer>
         <div className="footer-controls">
-          <button
-            type="button"
-            id="mainThemeToggle"
-            className={`theme-toggle-btn ${isDark ? 'dark' : 'light'}`}
-            aria-pressed={isDark}
-            aria-label="Toggle background theme"
-            onClick={toggleTheme}
-          >
-            {isDark ? 'dark' : 'light'}
-          </button>
+          <label className="toggle-switch" aria-label="Toggle background theme">
+            <input type="checkbox" checked={!isDark} onChange={toggleTheme} />
+            <span className="toggle-switch__slider" aria-hidden="true" />
+          </label>
         </div>
       </Footer>
     </>
