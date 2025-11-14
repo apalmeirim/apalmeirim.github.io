@@ -105,7 +105,16 @@ export default function SongArchive() {
 
   return (
     <div className="song-archive">
-      <h2>archive</h2>
+      <h2 className="showcase-heading">
+        <a
+          href={PLAYLIST_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="showcase-heading__button"
+        >
+          archive
+        </a>
+      </h2>
       <div className="song-grid">
         {songs.map((song, index) => {
           const formattedDate = new Date(song.addedAt).toLocaleDateString();
@@ -133,14 +142,6 @@ export default function SongArchive() {
         })}
       </div>
 
-      <a
-        href={PLAYLIST_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="playlist-link home-link"
-      >
-        go to playlist
-      </a>
     </div>
   );
 }

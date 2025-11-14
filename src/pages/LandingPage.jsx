@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer.jsx';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 
 export default function LandingPage() {
   usePageTitle('.zzz');
+  const [showWhisper, setShowWhisper] = useState(false);
   useEffect(() => {
     const previousPadding = document.body.style.padding;
     const previousBackground = document.body.style.backgroundColor;
@@ -20,16 +21,29 @@ export default function LandingPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => setShowWhisper(true), 5000);
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
-    <div className="landing-page">
-      <Link className="landing-page__link" to="/main" aria-label="Enter site">
-        <img
-          className="landing-page__image"
-          src="/assets/images/sleepy-asleep_gif.gif"
-          alt="Snoopy sleeping"
-        />
-      </Link>
+    <Link className="landing-page" to="/main" aria-label="Enter site">
+      <img
+        className="landing-page__image"
+        src="/assets/images/sleepy-asleep_gif.gif"
+        alt="Snoopy sleeping"
+      />
+      <div className="landing-page__whisper-slot" aria-live="polite">
+        <p
+          className={`landing-page__whisper ${
+            showWhisper ? 'landing-page__whisper--visible' : ''
+          }`}
+        >
+          click/tap to enter...
+        </p>
+      </div>
       <Footer />
-    </div>
+    </Link>
   );
 }
+  

@@ -9,6 +9,7 @@ import AppsPage from './pages/AppsPage.jsx';
 import ReposPage from './pages/ReposPage.jsx';
 import LinksPage from './pages/LinksPage.jsx';
 import ShowcasePage from "./pages/ShowcasePage.jsx";
+import PassagesPage from "./pages/PassagesPage.jsx";
 import UnderConstructionPage from './pages/UnderConstructionPage.jsx';
 
 
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/projects/repos" element={<UnderConstructionPage />} />
           <Route path="/links" element={<LinksPage />} />
           <Route path="/showcase" element={<ShowcasePage />} />
+          <Route path="/passages" element={<PassagesPage />} />
           <Route path="/under-construction" element={<UnderConstructionPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

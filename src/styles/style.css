@@ -108,6 +108,8 @@ footer {
   gap: 20px;
   padding: 40px 20px;
   background: #0d0d0d;
+  color: var(--text-color);
+  text-decoration: none;
 }
 
 .landing-page__link {
@@ -117,6 +119,29 @@ footer {
 .landing-page__image {
   max-width: 247px;
   height: auto;
+}
+
+.landing-page__whisper-slot {
+  height: 1.2rem;
+  display: flex;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.landing-page__whisper {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: lowercase;
+  color: rgba(255, 255, 255, 0.75);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.landing-page__whisper--visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .landing-page footer {
@@ -283,6 +308,7 @@ nav.dropdown a {
   padding: 4px 0;
   color: var(--text-color);
   text-decoration: none;
+  box-shadow: none;
   border-radius: 0;
   transition: color 0.25s ease;
 }
@@ -694,8 +720,9 @@ body.dark-mode .gate-overlay {
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
-  max-width: 400px;
-  margin: 2rem auto;
+  max-width: 500px;
+  width: 100%;
+  margin: 1.5rem auto;
   text-align: center;
 }
 
@@ -707,7 +734,7 @@ body.dark-mode .gate-overlay {
 .song-archive {
   width: 100%;
   max-width: 600px;
-  margin: 2rem auto 0;
+  margin: 1.25rem auto 0;
   text-align: center;
 }
 
@@ -729,6 +756,83 @@ body.dark-mode .gate-overlay {
 .photo-dump-heading__link:focus-visible {
   color: var(--accent-main);
   transition: color 0.3s ease;
+}
+
+.showcase-heading {
+  margin: 40px 0 20px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+
+.showcase-heading--main {
+  font-size: clamp(1.6rem, 4vw, 2rem);
+  margin-bottom: 1.5rem;
+}
+
+.showcase-heading__button {
+  display: inline-block;
+  background: none;
+  border: none;
+  font: inherit;
+  color: var(--text-color);
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.showcase-heading__button:hover,
+.showcase-heading__button:focus-visible {
+  color: var(--accent-main);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  text-shadow: none;
+  outline: none;
+}
+
+.showcase-hero {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.showcase-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: 0;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.showcase-menu__button {
+  display: inline-block;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--text-color);
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  box-shadow: none;
+  transition: color 0.2s ease, text-shadow 0.25s ease;
+}
+
+.showcase-menu__button:hover,
+.showcase-menu__button:focus-visible {
+  color: var(--accent-main);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  text-shadow: none;
+  outline: none;
 }
 
 .song-grid {
@@ -818,6 +922,167 @@ body.dark-mode .gate-overlay {
 
 .playlist-link {
   margin-top: 1.5rem;
+}
+
+.passages-page {
+  margin: 2rem auto;
+  max-width: 640px;
+  text-align: center;
+}
+
+.passages-header {
+  margin-bottom: 1.5rem;
+}
+
+.passages-subhead {
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  color: rgb(255, 255, 255);
+}
+
+.passages-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.passage-link {
+  all: unset;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: color 0.2s ease, text-shadow 0.25s ease;
+}
+
+.passage-link:hover,
+.passage-link:focus-visible {
+  color: var(--accent-main);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  text-shadow: none;
+  outline: none;
+}
+
+.passage-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+}
+
+.passage-modal__panel {
+  position: relative;
+  width: min(90vw, 580px);
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 2rem;
+  background: var(--panel-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: 16px;
+  text-align: left;
+}
+
+.passage-modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.passage-modal__close:hover,
+.passage-modal__close:focus-visible {
+  color: var(--accent-main);
+  outline: none;
+}
+
+.passage-modal__title {
+  margin-bottom: 1.25rem;
+  font-family: 'Press Start 2P', cursive;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+
+.passage-modal__body {
+  font-family: 'VT323', monospace;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.showcase-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+}
+
+.showcase-modal__panel {
+  position: relative;
+  width: min(92vw, 720px);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem 1.5rem 2rem;
+  background: var(--panel-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: 18px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.showcase-modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 1rem;
+  letter-spacing: 0.25em;
+  text-transform: lowercase;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.showcase-modal__close:hover,
+.showcase-modal__close:focus-visible {
+  color: var(--accent-main);
+  outline: none;
 }
 /* --------------------------------------------
    Projects & Repos
