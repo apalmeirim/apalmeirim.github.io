@@ -2,7 +2,7 @@
 
 A minimal personal site built with plain HTML, CSS, and JavaScript.
 
-## Structure
+## structure
 
 - `style.css`: Global styles and typography.
 - `script.js`: Reserved for future interactivity.
