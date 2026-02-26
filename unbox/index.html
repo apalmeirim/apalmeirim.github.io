@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>unbox</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <main class="unbox-layout">
+      <section class="unbox-card" aria-live="polite">
+        <div class="unbox-embed" id="track-embed"></div>
+        <p class="unbox-track" id="track-name">loading...</p>
+        <p class="unbox-artist" id="track-artist"></p>
+        <p class="unbox-date" id="today-date"></p>
+        <a class="link unbox-playlist" href="https://open.spotify.com/playlist/35iWgU5Ah270CPSMCcP4h4" target="_blank" rel="noreferrer">
+          visit playlist
+        </a>
+        <div class="unbox-separator" aria-hidden="true"></div>
+        <div class="unbox-photos" id="photo-grid" aria-label="latest photos"></div>
+      </section>
+
+      <a class="back-link back-link-bottom" href="../main/">back</a>
+    </main>
+
+    <script>
+      const dateEl = document.getElementById("today-date");
+      const nameEl = document.getElementById("track-name");
+      const artistEl = document.getElementById("track-artist");
+      const embedEl = document.getElementById("track-embed");
+      const photoGrid = document.getElementById("photo-grid");
+
+      const formatDate = (date) =>
+        new Intl.DateTimeFormat("en-GB", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }).format(date);
+
+      const getTrackId = (spotifyUrl) => {
+        if (!spotifyUrl) return "";
+        const match = spotifyUrl.match(/track\/([A-Za-z0-9]+)/);
+        return match ? match[1] : "";
+      };
+
+      const renderEmbed = (trackId) => {
+        if (!trackId) return;
+        embedEl.innerHTML =
+          `<iframe title="spotify track" ` +
+          `src="https://open.spotify.com/embed/track/${trackId}" ` +
+          `width="100%" height="152" frameborder="0" ` +
+          `allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" ` +
+          `loading="lazy"></iframe>`;
+      };
+
+      const loadSong = async () => {
+        try {
+          const res = await fetch("https://dsapi-three.vercel.app/api/daily_song");
+          if (!res.ok) throw new Error("failed");
+          const data = await res.json();
+          nameEl.textContent = data.title || "unknown track";
+          artistEl.textContent = data.artist || "";
+          if (data.addedAt) {
+            dateEl.textContent = formatDate(new Date(data.addedAt));
+          } else {
+            dateEl.textContent = "";
+          }
+          renderEmbed(getTrackId(data.spotifyUrl));
+        } catch (error) {
+          nameEl.textContent = "unable to load today's track";
+          artistEl.textContent = "";
+          dateEl.textContent = "";
+        }
+      };
+
+      const renderPhotos = (files) => {
+        if (!photoGrid || !files || files.length === 0) return;
+        photoGrid.innerHTML = files
+          .map(
+            (file) =>
+              `<a class="photo-link" href="${file.viewLink}" target="_blank" rel="noreferrer">` +
+              `<img class="photo-img" src="${file.imageUrl}" alt="" loading="lazy" />` +
+              `</a>`
+          )
+          .join("");
+      };
+
+      const loadPhotos = async () => {
+        try {
+          const res = await fetch("https://dsapi-three.vercel.app/api/latest_photos");
+          if (!res.ok) throw new Error("failed");
+          const data = await res.json();
+          renderPhotos(data.files || []);
+        } catch (error) {
+          if (photoGrid) {
+            photoGrid.innerHTML = "";
+          }
+        }
+      };
+
+      loadSong();
+      loadPhotos();
+    </script>
+  </body>
+</html>
