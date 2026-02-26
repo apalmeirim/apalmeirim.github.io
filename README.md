@@ -1,6 +1,6 @@
 ﻿# portfolio
 
-Website: `https://apalmeirim.github.io`
+[apalmeirim.github.io](https://apalmeirim.github.io)
 
 A minimal personal site built with plain HTML, CSS, and JavaScript.
 
