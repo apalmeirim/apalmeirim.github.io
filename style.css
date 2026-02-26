@@ -1,0 +1,106 @@
+﻿:root {
+  --bg: #f6f2ea;
+  --text: #1f1f1f;
+  --hover: #3b3b3b;
+}
+
+@font-face {
+  font-family: "IA Writer Mono";
+  src: url("fonts/ia-writer-mono-latin-400-normal.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IA Writer Mono";
+  src: url("fonts/ia-writer-mono-latin-700-normal.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IA Writer Mono", "Courier New", monospace;
+}
+
+.center {
+  min-height: 100vh;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  grid-template-rows: 1fr auto;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0.1rem;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: var(--hover);
+  border-color: currentColor;
+  outline: none;
+}
+
+.clock {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  letter-spacing: 0.08em;
+}
+
+.clock-wrap {
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+}
+
+.back-link {
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0.1rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  color: var(--hover);
+  border-color: currentColor;
+  outline: none;
+}
+
+.back-link-bottom {
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 640px) {
+  .links {
+    gap: 1.2rem;
+  }
+}
