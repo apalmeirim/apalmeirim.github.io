@@ -1,5 +1,5 @@
 ﻿:root {
-  --bg: #f6f2ea;
+  --bg: #e8e3db;
   --text: #1f1f1f;
   --hover: #3b3b3b;
 }
@@ -43,6 +43,7 @@ body {
   grid-template-rows: 1fr auto;
 }
 
+
 .links {
   display: flex;
   flex-direction: column;
@@ -51,6 +52,7 @@ body {
   font-size: 1.25rem;
   letter-spacing: 0.02em;
 }
+
 
 .link {
   text-decoration: none;
@@ -96,11 +98,137 @@ body {
 }
 
 .back-link-bottom {
-  margin-bottom: 2rem;
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+}
+
+.pigeon-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  min-height: 100vh;
+}
+
+.pigeon-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-3rem);
+  gap: 1rem;
+  flex: 1;
+}
+
+.pigeon-image {
+  width: min(180px, 30vw);
+  height: auto;
+  display: block;
+  filter: grayscale(100%);
+}
+
+.pigeon-links {
+  gap: 1rem;
+}
+
+.link-button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0.1rem;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.link-button:hover,
+.link-button:focus-visible {
+  color: var(--hover);
+  outline: none;
 }
 
 @media (max-width: 640px) {
   .links {
     gap: 1.2rem;
   }
+}
+
+.happy-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr auto auto 1fr;
+  align-items: center;
+  justify-items: center;
+  gap: 1.5rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+
+.happy-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  font-size: 1.15rem;
+  letter-spacing: 0.03em;
+}
+
+.nav-title {
+  font-weight: 700;
+  font-size: 1.35rem;
+}
+
+.nav-button {
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.nav-button:hover,
+.nav-button:focus-visible {
+  color: var(--hover);
+  border-color: currentColor;
+  outline: none;
+}
+
+.nav-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  visibility: hidden;
+}
+
+.happy-content {
+  max-width: 80ch;
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+}
+
+
+.happy-text {
+  line-height: 1.6;
+}
+
+.happy-paragraph {
+  margin: 0 0 1rem;
+}
+
+.happy-paragraph:last-child {
+  margin-bottom: 1rem;
+}
+
+.download-link {
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
 }

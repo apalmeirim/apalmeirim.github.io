@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>happy me</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="happy-layout">
+      <div class="nav-title" id="section-title">prelude</div>
+
+      <section class="happy-content" aria-live="polite">
+        <div class="happy-text" id="section-text"></div>
+        <div class="happy-nav" aria-label="Section navigation">
+          <button class="nav-button" id="prev" type="button" aria-label="Previous section">
+            &lt;
+          </button>
+          <button class="nav-button" id="next" type="button" aria-label="Next section">
+            &gt;
+          </button>
+        </div>
+        <a class="link download-link" id="download-link" href="pdfs/pl_hm.pdf" download>
+          download
+        </a>
+      </section>
+
+      <a class="back-link back-link-bottom" href="main.html">back</a>
+    </main>
+
+    <script>
+      const sections = [
+        {
+          id: "prelude",
+          title: "prelude",
+          text:
+            "the gift of life is underappreciated. most of us want to have purpose, comfort, love and reason. and at the same time, hardship, pain, loss and confusion. the desperate want of obtaining balance, to have enough rain to feel the sun, and enough light to see in the darkness. when things are simpler, things are easier. but things are never simple: we confuse gratification with success, and shock with mistake, meanwhile an illusion is nurtured in self belief.\n\n" +
+            "the great paradoxical caveat in living in your own reflection is that being aware isn’t enough. when you are your worst enemy, your peers and caretakers become redundant, and slowly but surely a lie becomes your reality. living doesn’t just come from seeing, feeling and appreciating, but also doing. if contemplation brings conclusion but no action, things seem easier because you find consolation in the right to make a decision, but selection is much harder than it may seem.\n\n" +
+            "after living for some time in such a state of mind, putting the blame on circumstance is the only substance to keep things manageable. once we lose ourselves in the impression that we are in control, fate appears as the only answer. you know it all, and are conscious of the values and aspirations that you believe in, but responsibility remains on everything else but you. structure to act on growth arises once accountability isn’t taken for granted, and you begin to take change as an opportunity and not an obstacle.",
+          pdf: "pdfs/pl_hm.pdf",
+        },
+        {
+          id: "retrospect",
+          title: "retrospect",
+          text: "pondering.",
+          pdf: "pdfs/retrospect_happyme.pdf",
+        },
+        {
+          id: "plan",
+          title: "plan",
+          text: "pondering.",
+          pdf: "pdfs/plan_happyme.pdf",
+        },
+        {
+          id: "validity",
+          title: "validity",
+          text: "pondering.",
+          pdf: "pdfs/validity_happyme.pdf",
+        },
+      ];
+
+      const titleEl = document.getElementById("section-title");
+      const textEl = document.getElementById("section-text");
+      const downloadEl = document.getElementById("download-link");
+      const prevBtn = document.getElementById("prev");
+      const nextBtn = document.getElementById("next");
+      let currentIndex = 0;
+
+      const render = () => {
+        const section = sections[currentIndex];
+        titleEl.textContent = section.title;
+        const paragraphs = section.text.split("\n\n");
+        textEl.innerHTML = paragraphs
+          .map((paragraph) => `<p class="happy-paragraph">${paragraph}</p>`)
+          .join("");
+        downloadEl.href = section.pdf;
+        downloadEl.setAttribute("download", "");
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === sections.length - 1;
+      };
+
+      prevBtn.addEventListener("click", () => {
+        if (currentIndex > 0) {
+          currentIndex -= 1;
+          render();
+        }
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (currentIndex < sections.length - 1) {
+          currentIndex += 1;
+          render();
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>

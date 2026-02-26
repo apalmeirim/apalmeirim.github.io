@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pigeon</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="center pigeon-layout">
+      <div class="pigeon-stack">
+        <img class="pigeon-image" src="images/pigeon.png" alt="pigeon" />
+        <nav class="links pigeon-links" aria-label="Contact links">
+          <button class="link link-button" type="button" data-copy="a.palmeirim03@gmail.com" data-label="email">
+            email
+          </button>
+          <button class="link link-button" type="button" data-copy="+351 925 307 378" data-label="phone">
+            phone
+          </button>
+          <a class="link" href="https://www.linkedin.com/in/antonio-palmeirim-912200265/" target="_blank" rel="noreferrer">
+            linkedin
+          </a>
+          <a class="link" href="https://github.com/apalmeirim" target="_blank" rel="noreferrer">
+            github
+          </a>
+          <a class="link" href="https://open.spotify.com/user/5qdlubext6b85s81q0mm2mkx2?si=e8dc2c9116af4f6f" target="_blank" rel="noreferrer">
+            spotify
+          </a>
+        </nav>
+      </div>
+      <a class="back-link back-link-bottom" href="main.html">back</a>
+    </main>
+
+    <script>
+      const copyButtons = document.querySelectorAll("[data-copy]");
+
+      copyButtons.forEach((button) => {
+        button.addEventListener("click", async () => {
+          const value = button.getAttribute("data-copy") || "";
+          const label = button.getAttribute("data-label") || button.textContent;
+          try {
+            await navigator.clipboard.writeText(value);
+            button.textContent = "copied";
+            setTimeout(() => {
+              button.textContent = label;
+            }, 1200);
+          } catch (error) {
+            button.textContent = value;
+            setTimeout(() => {
+              button.textContent = label;
+            }, 2000);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
