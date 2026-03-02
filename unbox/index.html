@@ -12,10 +12,25 @@
         <div class="unbox-embed" id="track-embed"></div>
         <p class="unbox-track" id="track-name">loading...</p>
         <p class="unbox-artist" id="track-artist"></p>
-        <p class="unbox-date" id="today-date"></p>
-        <a class="link unbox-playlist" href="https://open.spotify.com/playlist/35iWgU5Ah270CPSMCcP4h4" target="_blank" rel="noreferrer">
-          visit playlist
-        </a>
+        <button class="link unbox-date-link" id="today-date-trigger" type="button" aria-haspopup="dialog" aria-expanded="false">
+          <span class="unbox-date" id="today-date"></span>
+        </button>
+        <div class="calendar-overlay" id="calendar-overlay" hidden>
+          <div class="calendar-popup" role="dialog" aria-modal="true" aria-label="daily song calendar">
+            <div class="calendar-header">
+              <button class="calendar-nav" id="calendar-prev" type="button" aria-label="previous month">&lt;</button>
+              <p class="calendar-month" id="calendar-month"></p>
+              <button class="calendar-nav" id="calendar-next" type="button" aria-label="next month">&gt;</button>
+            </div>
+            <div class="calendar-weekdays" aria-hidden="true">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div class="calendar-grid" id="calendar-grid"></div>
+            <a class="link unbox-playlist" href="https://open.spotify.com/playlist/35iWgU5Ah270CPSMCcP4h4" target="_blank" rel="noreferrer">
+              visit playlist
+            </a>
+          </div>
+        </div>
         <div class="unbox-separator" aria-hidden="true"></div>
         <div class="unbox-photos" id="photo-grid" aria-label="latest photos"></div>
       </section>
@@ -29,6 +44,17 @@
       const artistEl = document.getElementById("track-artist");
       const embedEl = document.getElementById("track-embed");
       const photoGrid = document.getElementById("photo-grid");
+      const dateTriggerEl = document.getElementById("today-date-trigger");
+      const calendarOverlayEl = document.getElementById("calendar-overlay");
+      const calendarGridEl = document.getElementById("calendar-grid");
+      const calendarMonthEl = document.getElementById("calendar-month");
+      const calendarPrevEl = document.getElementById("calendar-prev");
+      const calendarNextEl = document.getElementById("calendar-next");
+
+      const API_BASE = "https://dsapi-three.vercel.app/api/daily_song";
+      const API_ARCHIVE = "https://dsapi-three.vercel.app/api/archive";
+      const availableSongMap = new Map();
+      let currentMonth = new Date();
 
       const formatDate = (date) =>
         new Intl.DateTimeFormat("en-GB", {
@@ -36,6 +62,13 @@
           month: "long",
           day: "numeric",
         }).format(date);
+
+      const toDateKey = (date) => {
+        const year = date.getUTCFullYear();
+        const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+        const day = String(date.getUTCDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      };
 
       const getTrackId = (spotifyUrl) => {
         if (!spotifyUrl) return "";
@@ -53,19 +86,105 @@
           `loading="lazy"></iframe>`;
       };
 
+      const applySong = (data) => {
+        nameEl.textContent = data.title || "unknown track";
+        artistEl.textContent = data.artist || "";
+        if (data.addedAt) {
+          dateEl.textContent = formatDate(new Date(data.addedAt));
+        } else {
+          dateEl.textContent = "";
+        }
+        renderEmbed(getTrackId(data.spotifyUrl));
+      };
+
+      const loadArchive = async () => {
+        try {
+          const res = await fetch(API_ARCHIVE);
+          if (!res.ok) throw new Error("failed");
+          const songs = await res.json();
+          if (!Array.isArray(songs)) return;
+
+          songs.forEach((song) => {
+            if (!song?.addedAt) return;
+            const key = toDateKey(new Date(song.addedAt));
+            if (!availableSongMap.has(key)) {
+              availableSongMap.set(key, song);
+            }
+          });
+        } catch (error) {
+          return;
+        }
+      };
+
+      const getDaysInMonth = (year, monthIndex) => new Date(year, monthIndex + 1, 0).getDate();
+
+      const renderCalendar = () => {
+        const year = currentMonth.getFullYear();
+        const monthIndex = currentMonth.getMonth();
+        const monthStart = new Date(year, monthIndex, 1);
+        const daysInMonth = getDaysInMonth(year, monthIndex);
+        const firstWeekday = (monthStart.getDay() + 6) % 7;
+        const monthLabel = new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric" }).format(monthStart);
+
+        calendarMonthEl.textContent = monthLabel;
+        calendarGridEl.innerHTML = "";
+
+        const dateKeys = Array.from({ length: daysInMonth }, (_, index) => {
+          const day = String(index + 1).padStart(2, "0");
+          const month = String(monthIndex + 1).padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        });
+
+        for (let index = 0; index < firstWeekday; index += 1) {
+          const spacer = document.createElement("span");
+          spacer.className = "calendar-empty";
+          calendarGridEl.appendChild(spacer);
+        }
+
+        dateKeys.forEach((dateKey, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = String(index + 1);
+          button.className = "calendar-day";
+
+          const song = availableSongMap.get(dateKey);
+          if (song) {
+            button.classList.add("available");
+            button.addEventListener("click", async () => {
+              applySong(song);
+              closeCalendar();
+            });
+          } else {
+            button.disabled = true;
+          }
+
+          calendarGridEl.appendChild(button);
+        });
+      };
+
+      const openCalendar = () => {
+        calendarOverlayEl.hidden = false;
+        dateTriggerEl.setAttribute("aria-expanded", "true");
+        renderCalendar();
+      };
+
+      const closeCalendar = () => {
+        calendarOverlayEl.hidden = true;
+        dateTriggerEl.setAttribute("aria-expanded", "false");
+      };
+
       const loadSong = async () => {
         try {
-          const res = await fetch("https://dsapi-three.vercel.app/api/daily_song");
+          const res = await fetch(API_BASE);
           if (!res.ok) throw new Error("failed");
           const data = await res.json();
-          nameEl.textContent = data.title || "unknown track";
-          artistEl.textContent = data.artist || "";
-          if (data.addedAt) {
-            dateEl.textContent = formatDate(new Date(data.addedAt));
-          } else {
-            dateEl.textContent = "";
+          applySong(data);
+          if (data?.addedAt) {
+            const songDate = new Date(data.addedAt);
+            const songDateKey = toDateKey(songDate);
+            availableSongMap.set(songDateKey, data);
+            currentMonth = new Date(songDate.getFullYear(), songDate.getMonth(), 1);
           }
-          renderEmbed(getTrackId(data.spotifyUrl));
         } catch (error) {
           nameEl.textContent = "unable to load today's track";
           artistEl.textContent = "";
@@ -98,8 +217,37 @@
         }
       };
 
-      loadSong();
-      loadPhotos();
+      dateTriggerEl.addEventListener("click", async () => {
+        if (!calendarOverlayEl.hidden) {
+          closeCalendar();
+          return;
+        }
+        openCalendar();
+      });
+
+      calendarOverlayEl.addEventListener("click", (event) => {
+        if (event.target === calendarOverlayEl) {
+          closeCalendar();
+        }
+      });
+
+      calendarPrevEl.addEventListener("click", async () => {
+        currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
+        renderCalendar();
+      });
+
+      calendarNextEl.addEventListener("click", async () => {
+        currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
+        renderCalendar();
+      });
+
+      const init = async () => {
+        await loadArchive();
+        await loadSong();
+        await loadPhotos();
+      };
+
+      init();
     </script>
   </body>
 </html>
