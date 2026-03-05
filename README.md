@@ -1,16 +1,13 @@
-﻿# portfolio
 
-[apalmeirim.github.io](https://apalmeirim.github.io)
+[visit website.](https://apalmeirim.github.io)
 
-A minimal personal site built with plain HTML, CSS, and JavaScript.
+### structure
 
-## structure
+- `style.css`: global styles and typography
+- `script.js`: shared script placeholder
+- `clock.js`: clock rendering + behavior
+- `fonts/`, `images/`, `pdfs/`, `misc/`: asset folders
 
-- `style.css`: Global styles and typography.
-- `script.js`: Reserved for future interactivity.
-- `clock.js`: Updates the live clock.
-- `fonts/`, `images/`, `pdfs/`, `misc/`: Asset folders.
+### deploy
 
-## deploy
-
-This site deploys to GitHub Pages on every push to `main` via GitHub Actions.
+Deployed with GitHub Pages from `main` via GitHub Actions.
