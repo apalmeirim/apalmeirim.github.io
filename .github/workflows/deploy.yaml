@@ -31,6 +31,7 @@ jobs:
           repository: ${{ secrets.SECRET_CONTENT_REPO }}
           token: ${{ secrets.SECRET_CONTENT_TOKEN }}
           path: .secret-src
+          lfs: true
 
       - name: Inject secret pages into deploy artifact
         if: ${{ secrets.SECRET_CONTENT_REPO != '' && secrets.SECRET_CONTENT_TOKEN != '' }}
@@ -45,6 +46,10 @@ jobs:
             rm -rf images/secret
             cp -R .secret-src/images/secret ./images/secret
           fi
+          test -f secret/index.html
+          test -d images/secret
+          ls -la secret
+          ls -la images/secret
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
