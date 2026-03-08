@@ -24,6 +24,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Checkout private secret content
+        if: ${{ secrets.SECRET_CONTENT_REPO != '' && secrets.SECRET_CONTENT_TOKEN != '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.SECRET_CONTENT_REPO }}
+          token: ${{ secrets.SECRET_CONTENT_TOKEN }}
+          path: .secret-src
+
+      - name: Inject secret pages into deploy artifact
+        if: ${{ secrets.SECRET_CONTENT_REPO != '' && secrets.SECRET_CONTENT_TOKEN != '' }}
+        run: |
+          set -euo pipefail
+          if [ -d ".secret-src/secret" ]; then
+            rm -rf secret
+            cp -R .secret-src/secret ./secret
+          fi
+          if [ -d ".secret-src/images/secret" ]; then
+            mkdir -p images
+            rm -rf images/secret
+            cp -R .secret-src/images/secret ./images/secret
+          fi
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
