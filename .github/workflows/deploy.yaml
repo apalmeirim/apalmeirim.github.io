@@ -17,6 +17,9 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      SECRET_CONTENT_REPO: ${{ secrets.SECRET_CONTENT_REPO }}
+      SECRET_CONTENT_TOKEN: ${{ secrets.SECRET_CONTENT_TOKEN }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -25,16 +28,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Checkout private secret content
-        if: ${{ secrets.SECRET_CONTENT_REPO != '' && secrets.SECRET_CONTENT_TOKEN != '' }}
+        if: ${{ env.SECRET_CONTENT_REPO != '' && env.SECRET_CONTENT_TOKEN != '' }}
         uses: actions/checkout@v4
         with:
-          repository: ${{ secrets.SECRET_CONTENT_REPO }}
-          token: ${{ secrets.SECRET_CONTENT_TOKEN }}
+          repository: ${{ env.SECRET_CONTENT_REPO }}
+          token: ${{ env.SECRET_CONTENT_TOKEN }}
           path: .secret-src
           lfs: true
 
       - name: Inject secret pages into deploy artifact
-        if: ${{ secrets.SECRET_CONTENT_REPO != '' && secrets.SECRET_CONTENT_TOKEN != '' }}
+        if: ${{ env.SECRET_CONTENT_REPO != '' && env.SECRET_CONTENT_TOKEN != '' }}
         run: |
           set -euo pipefail
           if [ -d ".secret-src/secret" ]; then
