@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>unbox</title>
+    <title>music</title>
     <link rel="stylesheet" href="../style.css" />
   </head>
   <body>
@@ -31,19 +31,17 @@
             </a>
           </div>
         </div>
-        <div class="unbox-separator" aria-hidden="true"></div>
-        <div class="unbox-photos" id="photo-grid" aria-label="latest photos"></div>
       </section>
 
       <a class="back-link back-link-bottom" href="../main/">back</a>
     </main>
 
+    <script src="../script.js"></script>
     <script>
       const dateEl = document.getElementById("today-date");
       const nameEl = document.getElementById("track-name");
       const artistEl = document.getElementById("track-artist");
       const embedEl = document.getElementById("track-embed");
-      const photoGrid = document.getElementById("photo-grid");
       const dateTriggerEl = document.getElementById("today-date-trigger");
       const calendarOverlayEl = document.getElementById("calendar-overlay");
       const calendarGridEl = document.getElementById("calendar-grid");
@@ -192,31 +190,6 @@
         }
       };
 
-      const renderPhotos = (files) => {
-        if (!photoGrid || !files || files.length === 0) return;
-        photoGrid.innerHTML = files
-          .map(
-            (file) =>
-              `<a class="photo-link" href="${file.viewLink}" target="_blank" rel="noreferrer">` +
-              `<img class="photo-img" src="${file.imageUrl}" alt="" loading="lazy" />` +
-              `</a>`
-          )
-          .join("");
-      };
-
-      const loadPhotos = async () => {
-        try {
-          const res = await fetch("https://dsapi-three.vercel.app/api/latest_photos");
-          if (!res.ok) throw new Error("failed");
-          const data = await res.json();
-          renderPhotos(data.files || []);
-        } catch (error) {
-          if (photoGrid) {
-            photoGrid.innerHTML = "";
-          }
-        }
-      };
-
       dateTriggerEl.addEventListener("click", async () => {
         if (!calendarOverlayEl.hidden) {
           closeCalendar();
@@ -244,7 +217,6 @@
       const init = async () => {
         await loadArchive();
         await loadSong();
-        await loadPhotos();
       };
 
       init();
