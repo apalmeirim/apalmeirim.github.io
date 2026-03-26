@@ -99,6 +99,10 @@ body.theme-dark {
   margin: 0;
 }
 
+.about-copy {
+  max-width: 26ch;
+}
+
 .create-intro {
   margin-bottom: 2rem;
 }
