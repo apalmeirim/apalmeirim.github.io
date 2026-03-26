@@ -7,7 +7,7 @@
 - `style.css`: global styles and typography
 - `script.js`: shared script placeholder
 - `clock.js`: clock rendering + behavior
-- `fonts/`, `images/`, `pdfs/`, `misc/`: asset folders
+- `fonts/`, `images/`, `misc/`: asset folders
 
 ### deploy
 

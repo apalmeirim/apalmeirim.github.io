@@ -7,97 +7,25 @@
     <link rel="stylesheet" href="../style.css" />
   </head>
   <body>
-    <main class="happy-layout">
-      <div class="nav-title" id="section-title">prelude</div>
-
-      <section class="happy-content" aria-live="polite">
-        <div class="happy-text" id="section-text"></div>
-        <div class="happy-nav" aria-label="Section navigation">
-          <button class="nav-button" id="prev" type="button" aria-label="Previous section">
-            &lt;
-          </button>
-          <button class="nav-button" id="next" type="button" aria-label="Next section">
-            &gt;
-          </button>
-        </div>
-        <a class="link download-link" id="download-link" href="../pdfs/pl_hm.pdf" download>
+    <main class="center">
+      <nav class="links happy-list" aria-label="Happy me sections">
+        <a class="happy-list-item link" href="./prelude.html">prelude</a>
+        <a class="happy-list-item link" href="./retrospect.html">retrospect</a>
+        <a class="happy-list-item link" href="./grief.html">grief</a>
+        <span class="happy-list-item happy-list-item-disabled" aria-disabled="true">?</span>
+        <span class="happy-list-item happy-list-item-disabled" aria-disabled="true">?</span>
+        <a
+          class="link download-link"
+          href="../misc/46603a7c-2b70-4360-b7d2-e013f7af01dc_happy_me.pdf"
+          download
+        >
           download
         </a>
-      </section>
+      </nav>
 
       <a class="back-link back-link-bottom" href="../main/">back</a>
     </main>
 
     <script src="../script.js"></script>
-    <script>
-      const sections = [
-        {
-          id: "prelude",
-          title: "prelude",
-          text:
-            "the gift of life is underappreciated. most of us want to have purpose, comfort, love and reason. and at the same time, hardship, pain, loss and confusion. the desperate want of obtaining balance, to have enough rain to feel the sun, and enough light to see in the darkness. when things are simpler, things are easier. but things are never simple: we confuse gratification with success, and shock with mistake, meanwhile an illusion is nurtured in self belief.\n\n" +
-            "the great paradoxical caveat in living in your own reflection is that being aware isn’t enough. when you are your worst enemy, your peers and caretakers become redundant, and slowly but surely a lie becomes your reality. living doesn’t just come from seeing, feeling and appreciating, but also doing. if contemplation brings conclusion but no action, things seem easier because you find consolation in the right to make a decision, but selection is much harder than it may seem.\n\n" +
-            "after living for some time in such a state of mind, putting the blame on circumstance is the only substance to keep things manageable. once we lose ourselves in the impression that we are in control, fate appears as the only answer. you know it all, and are conscious of the values and aspirations that you believe in, but responsibility remains on everything else but you. structure to act on growth arises once accountability isn’t taken for granted, and you begin to take change as an opportunity and not an obstacle.",
-          pdf: "../pdfs/pl_hm.pdf",
-        },
-        {
-          id: "retrospect",
-          title: "retrospect",
-          text:
-            "my life has little to complain, and most of what i whine about are mere excuses to feel human. coming to terms with the blessing of comfort didn’t result in gratitude, but rather anger, taking everything for granted destroyed my sense of a wonderful hand. overtime, i created an illusion in thinking that i was being punished for having so many options, when i was punishing myself for lacking initiative. once a routine was built around the mirage of “slowly moving”, i felt content with where i halted, giving myself a false sense of having the upper hand. remaining unresolved with many issues involving self belief and the distanced identity with my own values, i became arrogant, ungrateful and stale, without ever acknowledging any responsibility for my actions. this slowly transformed into secluding myself from emotion, hiding from confrontation and being negligent to any egoistic behavior. i live with this regret here, as i wasn’t fair to the people that trusted and relied on me, especially my mother.\n\n" +
-            "acting and being spoiled are two separate behaviors. in the process of creating an opinion, i find it terribly difficult to understand empathy, but pretending to be empathetic isn’t something that requires much effort. you can be there for someone, offer your shoulder and do your best at making their day brighter, all in the meanwhile you have no real sensitivity towards this person, because comprehension isn’t present. from my experience, immediately turning to comparison to try to see how another person feels creates a feeling of insufficiency. i would ask myself: “how can i help, if i don’t truly understand?”. becoming familiar with someone’s hardship doesn’t involve putting yourself in their position, and i realized the key is the effortless beauty in just being present, with open ears and arms, without actively trying to fix anything. how could i show my care and empathy to others, when i didn’t even have any for myself? my lack of awareness made me forget that knowing that we are not alone makes things so much lighter, and i was living in a world where i felt better being alone, but i wasn’t alone nor did i feel better.\n\n" +
-            "the origin of this mishap doesn’t matter to me. my actions hurt people that deserved love, spoiled a year of my life, gave me the impression that i was where i needed to be and turned me into an authentic brat. the lesson i learned was to be more present everywhere, including my own life. going back and doing it all over again differently would be selfish, so i must turn anger into recognition and regret into motivation to become something better, for myself and others that live with my presence, transforming my values into effort, and beliefs into union.",
-          pdf: "../pdfs/rs_hm.pdf",
-        },
-        {
-          id: "grief",
-          title: "grief",
-          text: "hurting...",
-          pdf: "../pdfs/grief_happyme.pdf",
-        },
-        {
-          id: "_unknown",
-          title: "_unknown",
-          text: "?",
-          pdf: "../pdfs/_happyme.pdf",
-        },
-      ];
-
-      const titleEl = document.getElementById("section-title");
-      const textEl = document.getElementById("section-text");
-      const downloadEl = document.getElementById("download-link");
-      const prevBtn = document.getElementById("prev");
-      const nextBtn = document.getElementById("next");
-      let currentIndex = 0;
-
-      const render = () => {
-        const section = sections[currentIndex];
-        titleEl.textContent = section.title;
-        const paragraphs = section.text.split("\n\n");
-        textEl.innerHTML = paragraphs
-          .map((paragraph) => `<p class="happy-paragraph">${paragraph}</p>`)
-          .join("");
-        downloadEl.href = section.pdf;
-        downloadEl.setAttribute("download", "");
-        prevBtn.disabled = currentIndex === 0;
-        nextBtn.disabled = currentIndex === sections.length - 1;
-      };
-
-      prevBtn.addEventListener("click", () => {
-        if (currentIndex > 0) {
-          currentIndex -= 1;
-          render();
-        }
-      });
-
-      nextBtn.addEventListener("click", () => {
-        if (currentIndex < sections.length - 1) {
-          currentIndex += 1;
-          render();
-        }
-      });
-
-      render();
-    </script>
   </body>
 </html>

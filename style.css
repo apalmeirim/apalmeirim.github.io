@@ -86,6 +86,10 @@ body.theme-dark {
   text-align: center;
 }
 
+.create-card {
+  gap: 0;
+}
+
 .about-title {
   margin: 0 0 0.4rem;
   font-size: 1.3rem;
@@ -93,6 +97,10 @@ body.theme-dark {
 
 .about-item {
   margin: 0;
+}
+
+.create-intro {
+  margin-bottom: 2rem;
 }
 
 
@@ -238,7 +246,7 @@ body.theme-dark .site-theme-toggle-icon {
 .happy-layout {
   min-height: 100vh;
   display: grid;
-  grid-template-rows: 1fr auto auto 1fr;
+  grid-template-rows: 1fr auto 1fr;
   align-items: center;
   justify-items: center;
   gap: 1.5rem;
@@ -246,43 +254,57 @@ body.theme-dark .site-theme-toggle-icon {
   text-align: center;
 }
 
+.happy-reading-layout {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.5rem 4rem;
+  text-align: center;
+}
 
-.happy-nav {
+.happy-list {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
-  font-size: 1.15rem;
-  letter-spacing: 0.03em;
+  gap: 1rem;
 }
 
-.nav-title {
-  font-weight: 700;
-  font-size: 1.35rem;
-}
-
-.nav-button {
-  border: 1px solid currentColor;
+.happy-list-item {
   background: transparent;
+  border: none;
+  display: inline-block;
+  padding: 0;
   color: inherit;
-  font-family: inherit;
-  font-size: 0.95rem;
-  letter-spacing: 0.08em;
-  padding: 0.35rem 0.75rem;
+  font: inherit;
+  font-size: 1.2rem;
+  letter-spacing: 0.03em;
   cursor: pointer;
-  transition: color 120ms ease, border-color 120ms ease;
+  border-bottom: 1px solid transparent;
+  transition: color 120ms ease, border-color 120ms ease, opacity 120ms ease;
 }
 
-.nav-button:hover,
-.nav-button:focus-visible {
+.happy-list-item:hover,
+.happy-list-item:focus-visible,
+.happy-list-item.is-active {
   color: var(--hover);
   border-color: currentColor;
   outline: none;
 }
 
-.nav-button:disabled {
-  opacity: 0.35;
+.happy-list-item-disabled {
+  opacity: 0.4;
   cursor: default;
-  visibility: hidden;
+}
+
+.happy-list-item-disabled:hover,
+.happy-list-item-disabled:focus-visible {
+  color: inherit;
+  border-color: transparent;
+}
+
+.nav-title {
+  font-weight: 700;
+  font-size: 1.35rem;
 }
 
 .happy-content {
