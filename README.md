@@ -2,18 +2,18 @@
 
 [visit website.](https://apalmeirim.github.io)
 
-### structure
+## structure
 
 - `style.css`: global styles and typography
 - `script.js`: shared script placeholder
 - `clock.js`: clock rendering + behavior
 - `fonts/`, `images/`, `misc/`: asset folders
 
-### deploy
+## deploy
 
 Deployed with GitHub Pages from `main` via GitHub Actions.
 
-### tech stack
+## tech stack
 
 - html
 - css
