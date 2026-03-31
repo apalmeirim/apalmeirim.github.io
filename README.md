@@ -12,3 +12,10 @@
 ### deploy
 
 Deployed with GitHub Pages from `main` via GitHub Actions.
+
+### tech stack
+
+- html
+- css
+- javascript
+- github (deployment)
