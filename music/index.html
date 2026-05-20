@@ -109,7 +109,7 @@
               availableSongMap.set(key, song);
             }
           });
-        } catch (error) {
+        } catch {
           return;
         }
       };
@@ -148,7 +148,7 @@
           const song = availableSongMap.get(dateKey);
           if (song) {
             button.classList.add("available");
-            button.addEventListener("click", async () => {
+            button.addEventListener("click", () => {
               applySong(song);
               closeCalendar();
             });
@@ -183,14 +183,14 @@
             availableSongMap.set(songDateKey, data);
             currentMonth = new Date(songDate.getFullYear(), songDate.getMonth(), 1);
           }
-        } catch (error) {
+        } catch {
           nameEl.textContent = "unable to load today's track";
           artistEl.textContent = "";
           dateEl.textContent = "";
         }
       };
 
-      dateTriggerEl.addEventListener("click", async () => {
+      dateTriggerEl.addEventListener("click", () => {
         if (!calendarOverlayEl.hidden) {
           closeCalendar();
           return;
@@ -204,12 +204,12 @@
         }
       });
 
-      calendarPrevEl.addEventListener("click", async () => {
+      calendarPrevEl.addEventListener("click", () => {
         currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
         renderCalendar();
       });
 
-      calendarNextEl.addEventListener("click", async () => {
+      calendarNextEl.addEventListener("click", () => {
         currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
         renderCalendar();
       });
