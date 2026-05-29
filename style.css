@@ -188,6 +188,28 @@ body.theme-dark .site-theme-toggle-icon {
   transform: translateX(-50%);
 }
 
+.clock-back-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  opacity: 1;
+  border-bottom: none;
+  transition: opacity 1200ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.clock-back-link.is-faded {
+  opacity: 0;
+}
+
+.clock-back-link.is-faded:hover,
+.clock-back-link.is-faded:focus-visible {
+  opacity: 1;
+}
+
+.clock-back-link:hover,
+.clock-back-link:focus-visible {
+  border-color: transparent;
+}
+
 .link-button {
   background: transparent;
   border: none;
@@ -438,5 +460,89 @@ body.theme-dark .site-theme-toggle-icon {
   display: inline-block;
   justify-self: center;
   width: fit-content;
+}
+
+.click-layout {
+  min-height: 100vh;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  padding: 2rem 1.5rem 4rem;
+  position: relative;
+}
+
+.click-score {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.click-game {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  align-self: center;
+  gap: 0.35rem;
+}
+
+.cookie-button {
+  width: 128px;
+  height: 128px;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: transform 80ms ease;
+}
+
+.cookie-button:hover,
+.cookie-button:focus-visible {
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.cookie-button:active,
+.cookie-button.is-crumbling {
+  transform: scale(0.97);
+}
+
+.cookie-image {
+  width: 128px;
+  height: 128px;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.cookie-crumbs {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.cookie-crumb {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  image-rendering: pixelated;
+  animation-name: crumb-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes crumb-fall {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--crumb-x), var(--crumb-y));
+  }
 }
 

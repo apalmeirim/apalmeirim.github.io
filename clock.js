@@ -1,6 +1,8 @@
 (function () {
   const clockEl = document.getElementById("clock");
   const dateEl = document.getElementById("clock-date");
+  const backLinkEl = document.querySelector(".clock-back-link");
+  const BACK_LINK_FADE_DELAY_MS = 1000;
 
   function pad(value) {
     return String(value).padStart(2, "0");
@@ -24,6 +26,17 @@
     if (dateEl) {
       dateEl.textContent = formatDate(now);
     }
+  }
+
+  function fadeBackLink() {
+    if (!backLinkEl) {
+      return;
+    }
+    backLinkEl.classList.add("is-faded");
+  }
+
+  if (backLinkEl) {
+    setTimeout(fadeBackLink, BACK_LINK_FADE_DELAY_MS);
   }
 
   updateClock();
