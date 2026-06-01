@@ -14,10 +14,25 @@
           <img class="cookie-image" src="./mc.png" alt="" aria-hidden="true" />
           <span class="cookie-crumbs" id="cookie-crumbs" aria-hidden="true"></span>
         </button>
+        <button class="link-button click-token-open" id="open-token-modal-button" type="button">token</button>
+      </section>
+      <section class="click-token-modal" id="click-token-modal" hidden>
+        <div class="click-token-modal-card">
+          <p class="click-token-value" id="click-token-value"></p>
+          <div class="click-token-actions">
+            <button class="link-button" id="copy-token-button" type="button">copy</button>
+          </div>
+          <input class="click-token-input" id="token-import-input" type="text" autocomplete="off" spellcheck="false" placeholder="paste token here" />
+          <div class="click-token-actions">
+            <button class="link-button" id="use-token-button" type="button">load</button>
+            <button class="link-button" id="close-token-modal-button" type="button">close</button>
+          </div>
+        </div>
       </section>
       <a class="back-link back-link-bottom" href="../main/">back</a>
     </main>
     <script src="../script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../click.js"></script>
   </body>
 </html>
