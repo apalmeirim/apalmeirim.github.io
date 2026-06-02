@@ -483,7 +483,7 @@ body.theme-dark .site-theme-toggle-icon {
   display: grid;
   place-items: center;
   align-self: center;
-  gap: 0.35rem;
+  gap: 0.45rem;
 }
 
 .cookie-button {
@@ -533,6 +533,71 @@ body.theme-dark .site-theme-toggle-icon {
   animation-name: crumb-fall;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
+}
+
+.click-token-open {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.click-token-label,
+.click-token-import-label {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.click-token-value {
+  margin: 0;
+  font-size: 0.75rem;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.click-token-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.click-token-input {
+  width: min(360px, 92vw);
+  padding: 0.35rem 0.5rem;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+}
+
+.click-token-input:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+}
+
+.click-token-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  display: grid;
+  place-items: center;
+  z-index: 30;
+}
+
+.click-token-modal[hidden] {
+  display: none;
+}
+
+.click-token-modal-card {
+  width: min(420px, 92vw);
+  background: var(--bg);
+  border: 1px solid currentColor;
+  padding: 0.9rem;
+  display: grid;
+  justify-items: center;
+  gap: 0.45rem;
 }
 
 @keyframes crumb-fall {
