@@ -1,6 +1,7 @@
 (function () {
   const clockEl = document.getElementById("clock");
   const dateEl = document.getElementById("clock-date");
+  const utcEl = document.getElementById("clock-date-utc");
   const backLinkEl = document.querySelector(".clock-back-link");
   const BACK_LINK_FADE_DELAY_MS = 1000;
 
@@ -9,12 +10,17 @@
   }
 
   function formatDate(date) {
-    return new Intl.DateTimeFormat("en-GB", {
-      weekday: "long",
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    }).format(date);
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    return `${year}-${month}-${day}`;
+  }
+
+  function formatUtcTime(date) {
+    const hours = pad(date.getUTCHours());
+    const minutes = pad(date.getUTCMinutes());
+    const seconds = pad(date.getUTCSeconds());
+    return `${hours}:${minutes}:${seconds} UTC`;
   }
 
   function updateClock() {
@@ -25,6 +31,9 @@
     clockEl.textContent = `${h}:${m}:${s}`;
     if (dateEl) {
       dateEl.textContent = formatDate(now);
+    }
+    if (utcEl) {
+      utcEl.textContent = formatUtcTime(now);
     }
   }
 

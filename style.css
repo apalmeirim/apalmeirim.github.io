@@ -126,6 +126,11 @@ body.theme-dark {
   letter-spacing: 0.04em;
 }
 
+.clock-date-utc {
+  font-size: 0.85rem;
+  opacity: 0.78;
+}
+
 .site-theme-toggle {
   width: 2.5rem;
   height: 2.5rem;
