@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>website</title>
+    <link rel="stylesheet" href="../../style.css" />
+  </head>
+  <body>
+    <main class="center about-layout">
+      <section class="about-card" aria-label="Site information">
+        <p class="about-item">font: IA Writer Mono</p>
+        <p class="about-item">background: <span id="bg-hex-value">#e8e3db</span></p>
+        <p class="about-item">
+          repo:
+          <a class="link" href="https://github.com/apalmeirim/apalmeirim.github.io" target="_blank" rel="noreferrer">
+            github.com
+          </a>
+        </p>
+      </section>
+      <div class="page-footer">
+        <a class="icon-button" href="../" aria-label="back">
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </a>
+        <button class="icon-button site-theme-toggle" id="site-theme-toggle" type="button" aria-label="switch to dark mode">
+          <span class="site-theme-toggle-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </main>
+    <script src="../../script.js"></script>
+    <script>
+      const bgHexEl = document.getElementById("bg-hex-value");
+
+      function updateBgHex() {
+        bgHexEl.textContent = getComputedStyle(document.body).getPropertyValue("--bg").trim();
+      }
+
+      updateBgHex();
+      window.addEventListener("site-theme-change", updateBgHex);
+    </script>
+  </body>
+</html>

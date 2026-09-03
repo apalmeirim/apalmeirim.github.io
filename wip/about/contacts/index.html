@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>me</title>
+    <link rel="stylesheet" href="../../style.css" />
+  </head>
+  <body>
+    <main class="center">
+      <section class="about-card" aria-label="Me">
+        <p class="about-copy contact-intro">
+          <em>software engineer</em>, currently working @ Accenture.
+        </p>
+        <nav class="links" aria-label="Contact links">
+          <button class="link link-button" type="button" data-copy="antonioplr@pm.me">
+            email
+          </button>
+          <button class="link link-button" type="button" data-copy="+351 925 307 378">
+            phone
+          </button>
+          <a class="link" href="https://www.linkedin.com/in/antonio-palmeirim-912200265/" target="_blank" rel="noreferrer">
+            linkedin
+          </a>
+          <a class="link" href="../../misc/cv2026_02.pdf" download>
+            download cv
+          </a>
+        </nav>
+      </section>
+      <div class="page-footer">
+        <a class="icon-button" href="../" aria-label="back">
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </a>
+        <button class="icon-button site-theme-toggle" id="site-theme-toggle" type="button" aria-label="switch to dark mode">
+          <span class="site-theme-toggle-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </main>
+
+    <script src="../../script.js"></script>
+    <script>
+      const copyButtons = document.querySelectorAll("[data-copy]");
+
+      copyButtons.forEach((button) => {
+        button.dataset.revealed = "false";
+
+        button.addEventListener("click", async () => {
+          const value = button.getAttribute("data-copy") || "";
+          const revealed = button.dataset.revealed === "true";
+
+          if (!revealed) {
+            button.textContent = value;
+            button.dataset.revealed = "true";
+            return;
+          }
+
+          try {
+            await navigator.clipboard.writeText(value);
+            button.textContent = "copied";
+            setTimeout(() => {
+              button.textContent = value;
+            }, 1200);
+          } catch {
+            button.textContent = value;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
