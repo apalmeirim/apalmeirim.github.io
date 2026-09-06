@@ -1,4 +1,4 @@
-wip/misc/sounds/*.mp3
+src/misc/sounds/*.mp3
 .vscode
 .claude
 .agents
