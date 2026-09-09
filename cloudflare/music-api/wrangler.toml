@@ -1,0 +1,11 @@
+name = "music-api"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+ALLOWED_ORIGIN = "*"
+NOTION_WEEK_DB_ID = "3d32c65d6d28807095f6d22e101a800b"
+NOTION_PLAYLISTS_DB_ID = "3d32c65d6d28801385c7c67c44e225be"
+
+# NOTION_TOKEN is a secret, not set here.
+# Run: wrangler secret put NOTION_TOKEN

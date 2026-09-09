@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>music</title>
+    <link rel="stylesheet" href="../../style.css" />
+  </head>
+  <body>
+    <main class="center about-layout">
+      <section class="about-card music-card" aria-label="Music">
+        <svg class="page-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="music">
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+
+        <div class="music-week" id="music-week" aria-label="This week's rotation">
+          <button class="music-day" type="button" disabled data-day="Mon"><span class="music-day-cover" hidden></span><span class="music-day-title"></span><span class="music-day-label">mon</span></button>
+          <button class="music-day" type="button" disabled data-day="Tue"><span class="music-day-cover" hidden></span><span class="music-day-title"></span><span class="music-day-label">tue</span></button>
+          <button class="music-day" type="button" disabled data-day="Wed"><span class="music-day-cover" hidden></span><span class="music-day-title"></span><span class="music-day-label">wed</span></button>
+          <button class="music-day" type="button" disabled data-day="Thu"><span class="music-day-cover" hidden></span><span class="music-day-title"></span><span class="music-day-label">thu</span></button>
+          <button class="music-day" type="button" disabled data-day="Fri"><span class="music-day-cover" hidden></span><span class="music-day-title"></span><span class="music-day-label">fri</span></button>
+          <button class="music-day" type="button" disabled data-day="Sat"><span class="music-day-cover" hidden></span><span class="music-day-title"></span><span class="music-day-label">sat</span></button>
+          <button class="music-day" type="button" disabled data-day="Sun"><span class="music-day-cover" hidden></span><span class="music-day-title"></span><span class="music-day-label">sun</span></button>
+        </div>
+
+        <nav class="links playlist-board" id="playlist-board" aria-label="Playlists"></nav>
+      </section>
+
+      <div class="page-footer">
+        <a class="icon-button" href="../" aria-label="back">
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </a>
+        <button class="icon-button site-theme-toggle" id="site-theme-toggle" type="button" aria-label="switch to dark mode">
+          <span class="site-theme-toggle-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </main>
+
+    <div class="modal-overlay" id="song-modal" hidden>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-label="Song links">
+        <button class="icon-button modal-close" id="song-modal-close" type="button" aria-label="close">
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <img class="modal-cover" id="song-modal-cover" alt="" hidden />
+        <p class="modal-title" id="song-modal-title"></p>
+        <p class="modal-artist" id="song-modal-artist"></p>
+        <div class="modal-links">
+          <a class="link" id="song-modal-apple" target="_blank" rel="noreferrer">apple music</a>
+          <a class="link" id="song-modal-spotify" target="_blank" rel="noreferrer">spotify</a>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../script.js"></script>
+    <script>
+      const MUSIC_API_URL = "https://music-api.antonioplr.workers.dev/";
+
+      const weekEl = document.getElementById("music-week");
+      const playlistEl = document.getElementById("playlist-board");
+      const modalEl = document.getElementById("song-modal");
+      const modalCloseEl = document.getElementById("song-modal-close");
+      const modalCoverEl = document.getElementById("song-modal-cover");
+      const modalTitleEl = document.getElementById("song-modal-title");
+      const modalArtistEl = document.getElementById("song-modal-artist");
+      const modalAppleEl = document.getElementById("song-modal-apple");
+      const modalSpotifyEl = document.getElementById("song-modal-spotify");
+
+      function openModal(entry) {
+        if (entry.cover) {
+          modalCoverEl.src = entry.cover;
+          modalCoverEl.hidden = false;
+        } else {
+          modalCoverEl.hidden = true;
+        }
+        modalTitleEl.textContent = entry.title || "";
+        modalArtistEl.textContent = entry.artist || "";
+        modalAppleEl.href = entry.appleMusic || "#";
+        modalAppleEl.style.display = entry.appleMusic ? "" : "none";
+        modalSpotifyEl.href = entry.spotify || "#";
+        modalSpotifyEl.style.display = entry.spotify ? "" : "none";
+        modalEl.hidden = false;
+      }
+
+      function closeModal() {
+        modalEl.hidden = true;
+      }
+
+      modalCloseEl.addEventListener("click", closeModal);
+      modalEl.addEventListener("click", (event) => {
+        if (event.target === modalEl) {
+          closeModal();
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !modalEl.hidden) {
+          closeModal();
+        }
+      });
+
+      function renderWeek(week) {
+        const buttons = weekEl.querySelectorAll(".music-day");
+        buttons.forEach((button) => {
+          const day = button.dataset.day;
+          const slot = week.find((w) => w.day === day);
+          const entry = slot && slot.entry;
+
+          if (!entry) {
+            button.disabled = true;
+            button.classList.remove("has-entry");
+            return;
+          }
+
+          button.disabled = false;
+          button.classList.add("has-entry");
+          const coverEl = button.querySelector(".music-day-cover");
+          const titleEl = button.querySelector(".music-day-title");
+          if (entry.cover) {
+            coverEl.style.backgroundImage = `url("${entry.cover}")`;
+            coverEl.hidden = false;
+          } else {
+            coverEl.hidden = true;
+          }
+          titleEl.textContent = entry.title || "";
+          button.setAttribute("aria-label", [entry.title, entry.artist].filter(Boolean).join(" — "));
+          button.addEventListener("click", () => openModal(entry));
+        });
+      }
+
+      function renderPlaylists(playlists) {
+        playlistEl.innerHTML = "";
+        playlists.forEach((playlist) => {
+          const a = document.createElement("a");
+          a.className = "link playlist-item";
+          a.href = playlist.url;
+          a.target = "_blank";
+          a.rel = "noreferrer";
+          a.textContent = playlist.title;
+          playlistEl.appendChild(a);
+        });
+      }
+
+      fetch(MUSIC_API_URL)
+        .then((res) => res.json())
+        .then((data) => {
+          renderWeek(data.week || []);
+          renderPlaylists(data.playlists || []);
+        })
+        .catch((err) => {
+          // API unreachable: week stays disabled, playlist board stays empty.
+          console.error("music API fetch failed", err);
+        });
+    </script>
+  </body>
+</html>

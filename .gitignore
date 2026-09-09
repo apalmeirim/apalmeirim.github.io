@@ -2,3 +2,5 @@ src/misc/sounds/*.mp3
 .vscode
 .claude
 .agents
+cloudflare/**/node_modules
+cloudflare/**/.wrangler
