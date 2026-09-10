@@ -64,6 +64,19 @@ body.theme-dark {
   font-size: 1.4rem;
 }
 
+.kirby-ascii {
+  display: block;
+  width: max-content;
+  max-width: 90vw;
+  margin: 0 auto 0.75rem;
+  font-size: 2.4px;
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-weight: 700;
+  white-space: pre;
+  overflow-x: auto;
+}
+
 
 .link {
   text-decoration: none;
@@ -88,6 +101,33 @@ body.theme-dark {
 .about-layout {
   padding: 2rem 1.5rem;
 }
+
+.xp-page {
+  background-image: url("images/windows-xp.jpg");
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  color: #1f1f1f;
+}
+
+.xp-page.theme-dark {
+  background-image: url("images/windows-xp-night.jpg");
+  color: #ffffff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.xp-page .link:hover,
+.xp-page .link:focus-visible {
+  color: #3b3b3b;
+  border-color: currentColor;
+}
+
+.xp-page.theme-dark .link:hover,
+.xp-page.theme-dark .link:focus-visible {
+  color: #ffe9a8;
+  border-color: currentColor;
+}
+
 
 .about-card {
   display: grid;
@@ -136,8 +176,70 @@ body.theme-dark {
   max-width: 26ch;
 }
 
+.archive-title {
+  display: block;
+  width: 120px;
+  max-width: 45vw;
+  height: auto;
+  margin: 0 auto 0.75rem;
+}
+
 .contact-intro {
   margin: 0 0 0.6rem;
+}
+
+.contact-icons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+}
+
+.contact-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2.5rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  opacity: 0.9;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.contact-icon-btn:hover,
+.contact-icon-btn:focus-visible {
+  opacity: 1;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.contact-icon {
+  height: 2.5rem;
+  width: auto;
+  max-width: 4rem;
+  object-fit: contain;
+  display: block;
+}
+
+.contact-reveal {
+  min-height: 1.2em;
+  margin: 0.7rem 0 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.contact-reveal:not(:empty) {
+  cursor: pointer;
+}
+
+.contact-reveal:not(:empty):hover {
+  color: var(--hover);
 }
 
 .clock {

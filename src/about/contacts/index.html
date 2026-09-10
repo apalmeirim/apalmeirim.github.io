@@ -12,20 +12,21 @@
         <p class="about-copy contact-intro">
           <em>software engineer</em>, currently working @ Accenture.
         </p>
-        <nav class="links" aria-label="Contact links">
-          <button class="link link-button" type="button" data-copy="antonioplr@pm.me">
-            email
+        <nav class="contact-icons" aria-label="Contact links">
+          <button class="contact-icon-btn" type="button" data-copy="antonioplr@pm.me" aria-label="email">
+            <img class="contact-icon" src="../../images/email-png.png" alt="" />
           </button>
-          <button class="link link-button" type="button" data-copy="+351 925 307 378">
-            phone
+          <button class="contact-icon-btn" type="button" data-copy="+351 925 307 378" aria-label="phone">
+            <img class="contact-icon" src="../../images/phone-png.png" alt="" />
           </button>
-          <a class="link" href="https://www.linkedin.com/in/antonio-palmeirim-912200265/" target="_blank" rel="noreferrer">
-            linkedin
+          <a class="contact-icon-btn" href="https://www.linkedin.com/in/antonio-palmeirim-912200265/" target="_blank" rel="noreferrer" aria-label="linkedin">
+            <img class="contact-icon" src="../../images/linkednin-png.png" alt="" />
           </a>
-          <a class="link" href="../../misc/cv2026_02.pdf" download>
-            download cv
+          <a class="contact-icon-btn" href="../../misc/cv2026_02.pdf" download aria-label="download cv">
+            <img class="contact-icon" src="../../images/cv-png.png" alt="" />
           </a>
         </nav>
+        <p class="contact-reveal" id="contact-reveal" aria-live="polite"></p>
       </section>
       <div class="page-footer">
         <a class="icon-button" href="../" aria-label="back">
@@ -41,31 +42,47 @@
 
     <script src="../../script.js"></script>
     <script>
-      const copyButtons = document.querySelectorAll("[data-copy]");
+      const revealButtons = document.querySelectorAll("[data-copy]");
+      const reveal = document.getElementById("contact-reveal");
+      let hideTimer = null;
+      let currentValue = "";
 
-      copyButtons.forEach((button) => {
-        button.dataset.revealed = "false";
+      function hideReveal() {
+        clearTimeout(hideTimer);
+        hideTimer = null;
+        currentValue = "";
+        reveal.textContent = "";
+      }
 
-        button.addEventListener("click", async () => {
-          const value = button.getAttribute("data-copy") || "";
-          const revealed = button.dataset.revealed === "true";
+      function showValue(value) {
+        clearTimeout(hideTimer);
+        currentValue = value;
+        reveal.textContent = value;
+        hideTimer = setTimeout(hideReveal, 5000);
+      }
 
-          if (!revealed) {
-            button.textContent = value;
-            button.dataset.revealed = "true";
-            return;
-          }
-
-          try {
-            await navigator.clipboard.writeText(value);
-            button.textContent = "copied";
-            setTimeout(() => {
-              button.textContent = value;
-            }, 1200);
-          } catch {
-            button.textContent = value;
-          }
+      revealButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          showValue(button.getAttribute("data-copy") || "");
         });
+      });
+
+      reveal.addEventListener("click", async () => {
+        if (!currentValue) return;
+
+        try {
+          await navigator.clipboard.writeText(currentValue);
+          reveal.textContent = "copied";
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(hideReveal, 5000);
+          setTimeout(() => {
+            if (reveal.textContent === "copied") {
+              reveal.textContent = currentValue;
+            }
+          }, 900);
+        } catch {
+          /* clipboard unavailable; value stays visible to copy manually */
+        }
       });
     </script>
   </body>
