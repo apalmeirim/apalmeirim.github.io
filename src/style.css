@@ -69,6 +69,14 @@ body.theme-dark {
   width: 110px;
   max-width: 35vw;
   margin: 0 auto 0.75rem;
+  font-size: 2.4px;
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-weight: 700;
+  white-space: pre;
+  overflow-x: auto;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 
