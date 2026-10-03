@@ -25,6 +25,27 @@
 })();
 
 (function () {
+  const soonEls = document.querySelectorAll(".link-soon");
+
+  if (!soonEls.length) {
+    return;
+  }
+
+  soonEls.forEach((el) => {
+    const originalText = el.textContent;
+    let resetTimer = null;
+
+    el.addEventListener("click", () => {
+      clearTimeout(resetTimer);
+      el.textContent = "soon";
+      resetTimer = setTimeout(() => {
+        el.textContent = originalText;
+      }, 900);
+    });
+  });
+})();
+
+(function () {
   const THEME_STORAGE_KEY = "site-theme";
   const pageBody = document.body;
   const themeToggleEl = document.getElementById("site-theme-toggle");
