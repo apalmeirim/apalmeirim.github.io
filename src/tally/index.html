@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>tally</title>
+    <meta name="theme-color" content="#141414" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="tally" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icon-180.png" />
+    <link rel="icon" href="icon-192.png" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #141414;
+        --fg: #ece7df;
+        --muted: #8a857d;
+        --card: #1f1f1f;
+        --line: #333;
+        --danger: #e0644f;
+      }
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      html, body { margin: 0; background: var(--bg); color: var(--fg); }
+      body {
+        font-family: "Courier New", monospace;
+        font-weight: bold;
+        min-height: 100dvh;
+        padding: calc(env(safe-area-inset-top) + 24px) 16px calc(env(safe-area-inset-bottom) + 24px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        background: none;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+      }
+
+      #list {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+      body.empty #list { display: none; }
+      .box {
+        width: min(100%, 220px);
+        padding: 12px;
+        text-align: center;
+      }
+      .name { display: block; font-size: 0.8rem; overflow-wrap: anywhere; }
+      .count {
+        display: block;
+        font-size: 3.4rem;
+        line-height: 1.1;
+        margin-top: 2px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .plus {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        font-size: 2rem;
+        line-height: 1;
+        color: var(--muted);
+        border: 1px solid var(--line);
+      }
+      body.empty .plus {
+        width: 80px;
+        height: 80px;
+        font-size: 2.8rem;
+        background: var(--fg);
+        color: var(--bg);
+        border: 0;
+      }
+      .newbox {
+        width: min(100%, 220px);
+        font: inherit;
+        font-size: 16px; /* prevents iOS zoom on focus */
+        padding: 20px;
+        text-align: center;
+        background: var(--card);
+        border: 1px solid var(--fg);
+        border-radius: 16px;
+        color: var(--fg);
+        outline: none;
+        user-select: text;
+        -webkit-user-select: text;
+      }
+
+      dialog {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--bg);
+        color: var(--fg);
+        padding: 20px;
+        width: min(92vw, 360px);
+        font-family: inherit;
+      }
+      dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+      dialog input {
+        width: 100%;
+        font: inherit;
+        font-size: 16px;
+        padding: 12px;
+        text-align: center;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: var(--fg);
+        margin-bottom: 12px;
+      }
+      .stack { display: grid; gap: 8px; }
+      .stack button {
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--card);
+      }
+      .stack button.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+      .stack button.danger { color: var(--danger); }
+      #editDialog { width: fit-content; padding: 12px; }
+      #editDialog .stack { grid-template-columns: 64px 64px; }
+      #editDialog .stack button { height: 64px; padding: 0; font-size: 2rem; line-height: 1; }
+    </style>
+  </head>
+  <body>
+    <div id="list"></div>
+    <button class="plus" id="plus" aria-label="Add">+</button>
+    <input class="newbox" id="newbox" maxlength="80" enterkeyhint="done" hidden autocomplete="off" />
+
+    <!-- long-press a box -->
+    <dialog id="editDialog">
+      <form method="dialog" class="stack">
+        <button value="minus" aria-label="Subtract one">−</button>
+        <button value="delete" class="danger" aria-label="Remove">×</button>
+      </form>
+    </dialog>
+
+    <!-- long-press the + -->
+    <dialog id="menuDialog">
+      <div class="stack">
+        <button id="exportBtn">export backup</button>
+        <button id="importBtn">import backup</button>
+        <button id="closeMenu">close</button>
+      </div>
+      <input type="file" id="importFile" accept="application/json,.json" hidden />
+    </dialog>
+
+    <script>
+      const KEY = "tally.v1";
+      const $ = (id) => document.getElementById(id);
+
+      // item: { id, name, count, log: [timestamps of each tap] }
+      let items = load();
+
+      function load() {
+        try {
+          return JSON.parse(localStorage.getItem(KEY)) || [];
+        } catch {
+          return [];
+        }
+      }
+
+      function save() {
+        try {
+          localStorage.setItem(KEY, JSON.stringify(items));
+        } catch {}
+      }
+
+      // calls onLong after holding ~0.5s; swallows the click that follows
+      function onLongPress(el, onLong) {
+        let timer = null;
+        let fired = false;
+        el.addEventListener("pointerdown", () => {
+          fired = false;
+          timer = setTimeout(() => {
+            fired = true;
+            if (navigator.vibrate) navigator.vibrate(20);
+            onLong();
+          }, 500);
+        });
+        for (const ev of ["pointerup", "pointerleave", "pointercancel"]) {
+          el.addEventListener(ev, () => clearTimeout(timer));
+        }
+        el.addEventListener("contextmenu", (e) => e.preventDefault());
+        el.addEventListener("click", (e) => {
+          if (fired) {
+            e.stopImmediatePropagation();
+            fired = false;
+          }
+        }, true);
+      }
+
+      function render() {
+        const list = $("list");
+        list.innerHTML = "";
+        document.body.classList.toggle("empty", items.length === 0);
+
+        for (const item of items) {
+          const box = document.createElement("button");
+          box.className = "box";
+          const name = document.createElement("span");
+          name.className = "name";
+          name.textContent = item.name;
+          const count = document.createElement("span");
+          count.className = "count";
+          count.textContent = item.count;
+          box.append(name, count);
+
+          box.addEventListener("click", () => {
+            item.count++;
+            item.log.push(Date.now());
+            save();
+            count.textContent = item.count;
+            if (navigator.vibrate) navigator.vibrate(10);
+          });
+          onLongPress(box, () => openEdit(item));
+
+          list.append(box);
+        }
+      }
+
+      // + reveals the input box
+      $("plus").addEventListener("click", () => {
+        $("plus").hidden = true;
+        $("newbox").hidden = false;
+        $("newbox").focus();
+      });
+      onLongPress($("plus"), () => $("menuDialog").showModal());
+
+      function closeNew() {
+        $("newbox").value = "";
+        $("newbox").hidden = true;
+        $("plus").hidden = false;
+      }
+      $("newbox").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") $("newbox").blur();
+        if (e.key === "Escape") { $("newbox").value = ""; $("newbox").blur(); }
+      });
+      $("newbox").addEventListener("blur", () => {
+        const name = $("newbox").value.trim();
+        if (name) {
+          items.push({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), name, count: 0, log: [] });
+          save();
+          render();
+        }
+        closeNew();
+      });
+
+      let editing = null;
+      function openEdit(item) {
+        editing = item;
+        $("editDialog").showModal();
+      }
+      $("editDialog").onclose = () => {
+        const action = $("editDialog").returnValue;
+        $("editDialog").returnValue = "";
+        if (!editing) return;
+        if (action === "minus") {
+          editing.count = Math.max(0, editing.count - 1);
+          editing.log.pop();
+        } else if (action === "delete") {
+          if (confirm(`Remove "${editing.name}"?`)) items = items.filter((i) => i !== editing);
+        }
+        editing = null;
+        save();
+        render();
+      };
+      // tapping outside a dialog closes it
+      for (const d of [$("editDialog"), $("menuDialog")]) {
+        d.addEventListener("click", (e) => { if (e.target === d) d.close(); });
+      }
+
+      $("closeMenu").onclick = () => $("menuDialog").close();
+
+      $("exportBtn").onclick = async () => {
+        const json = JSON.stringify(items, null, 2);
+        const filename = `tally-${new Date().toISOString().slice(0, 10)}.json`;
+        const file = new File([json], filename, { type: "application/json" });
+        // share sheet works best on phones (save to Files, email, etc.)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({ files: [file], title: filename });
+            return;
+          } catch (err) {
+            if (err.name === "AbortError") return;
+          }
+        }
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(file);
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      };
+
+      $("importBtn").onclick = () => $("importFile").click();
+      $("importFile").onchange = async () => {
+        const file = $("importFile").files[0];
+        $("importFile").value = "";
+        if (!file) return;
+        try {
+          const data = JSON.parse(await file.text());
+          if (!Array.isArray(data)) throw new Error();
+          if (!confirm(`Replace current tallies with ${data.length} item(s) from the file?`)) return;
+          items = data.map((i) => ({
+            id: i.id || String(Math.random()),
+            name: String(i.name || "untitled"),
+            count: Number(i.count) || 0,
+            log: Array.isArray(i.log) ? i.log : [],
+          }));
+          save();
+          render();
+          $("menuDialog").close();
+        } catch {
+          alert("That file doesn't look like a tally backup.");
+        }
+      };
+
+      // ask the browser not to evict our data
+      if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      }
+
+      render();
+    </script>
+  </body>
+</html>
