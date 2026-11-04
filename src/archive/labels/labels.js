@@ -1,7 +1,11 @@
 (function () {
   const phraseEl = document.getElementById("labels-phrase");
+  const layoutEl = phraseEl.closest("main");
 
-  const WORD_RE = /[\p{L}\p{N}’']+/gu;
+  // a word, or the {answer} slot filled with what the reader typed into an ask box
+  const WORD_RE = /\{answer\}|[\p{L}\p{N}’']+/gu;
+  const ANSWER = "{answer}";
+  const ANSWER_KEY = "labels-answer";
   const byId = new Map(PHRASES.map((p) => [p.id, p]));
 
   function normalize(word) {
@@ -24,6 +28,9 @@
   }
 
   PHRASES.forEach((p) => {
+    if (p.ask) hasIncoming.add(p.ask.to);
+    if (p.all) hasIncoming.add(p.all);
+    if (p.next) hasIncoming.add(p.next);
     (p.from || []).forEach((l) => addLink(l.phrase, l, p.id));
     (p.to || []).forEach((l) => {
       if (l.url) {
@@ -54,6 +61,11 @@
 
   // the word to light up when the next render is reached by clicking a word
   let landing = null;
+
+  let answer = "";
+  try {
+    answer = sessionStorage.getItem(ANSWER_KEY) || "";
+  } catch (e) {}
 
   function currentId() {
     const id = Number(location.hash.slice(1));
@@ -94,6 +106,44 @@
     else location.hash = `#${target.to}`;
   }
 
+  // go to a phrase with nothing carried over: the screen just changes
+  function fadeTo(to) {
+    landing = { to, fade: true };
+    location.hash = `#${to}`;
+  }
+
+  // a text box whose answer opens phrase `to`, carrying the typed word over like a clicked one
+  function askBox(to) {
+    const form = document.createElement("form");
+    form.className = "labels-ask";
+    const input = document.createElement("input");
+    input.className = "labels-input";
+    input.type = "text";
+    input.maxLength = 40;
+    input.autocomplete = "off";
+    input.setAttribute("aria-label", "your answer");
+    input.spellcheck = false;
+    // one word only: spaces can't be typed or pasted in
+    input.addEventListener("input", () => {
+      const oneWord = input.value.replace(/\s+/g, "");
+      if (oneWord !== input.value) input.value = oneWord;
+    });
+    form.append(input);
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const value = input.value.trim();
+      if (!value) return;
+      answer = value;
+      try {
+        sessionStorage.setItem(ANSWER_KEY, value);
+      } catch (e) {}
+      landing = { to, lands: ANSWER, landsN: 1, word: value, from: input.getBoundingClientRect(), center: true };
+      input.blur();
+      location.hash = `#${to}`;
+    });
+    return form;
+  }
+
   function render() {
     const phrase = byId.get(currentId());
     const land = landing && landing.to === phrase.id ? landing : null;
@@ -109,6 +159,7 @@
       if (match.index > last) pieces.push({ el: span(phrase.text.slice(last, match.index)), index: wordIndex });
 
       const word = normalize(match[0]);
+      const shown = match[0] === ANSWER ? answer || "______" : match[0];
       const n = (seen.get(word) || 0) + 1;
       seen.set(word, n);
 
@@ -118,7 +169,7 @@
         const target = targets[Math.floor(Math.random() * targets.length)];
         el = document.createElement("a");
         el.className = "link labels-word";
-        el.textContent = match[0];
+        el.textContent = shown;
         if (target.url) {
           el.href = target.url;
           el.target = "_blank";
@@ -130,20 +181,30 @@
             follow(target, el);
           });
         }
+      } else if (phrase.all) {
+        el = document.createElement("a");
+        el.className = "link labels-word";
+        el.textContent = shown;
+        el.href = `#${phrase.all}`;
+        el.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          fadeTo(phrase.all);
+        });
       } else {
-        el = span(match[0]);
+        el = span(shown);
       }
 
-      if (land && normalize(land.lands) === word && land.landsN === n) {
+      if (land && land.lands && normalize(land.lands) === word && land.landsN === n) {
         landIndex = wordIndex;
         // only the part shared with the clicked word moves; the rest of this word pops in
-        const { at, len } = sharedPart(land.word, match[0]);
-        if (len > 0 && len < match[0].length) {
+        const { at, len } = sharedPart(land.word, shown);
+        if (len > 0 && len < shown.length) {
           const end = at + len;
-          const core = span(match[0].slice(at, end));
+          const core = span(shown.slice(at, end));
           core.classList.add("labels-landed");
           el.replaceChildren(
-            ...[span(match[0].slice(0, at)), core, span(match[0].slice(end))].filter((s) => s.textContent)
+            ...[span(shown.slice(0, at)), core, span(shown.slice(end))].filter((s) => s.textContent)
           );
           el.querySelectorAll(":scope > :not(.labels-landed)").forEach((s) => {
             s.classList.add("labels-rest");
@@ -159,6 +220,7 @@
       wordIndex++;
     }
     if (last < phrase.text.length) pieces.push({ el: span(phrase.text.slice(last)), index: wordIndex - 1 });
+    if (phrase.ask) pieces.push({ el: askBox(phrase.ask.to), index: wordIndex });
 
     // the rest of the phrase pops in, spreading out from the landed word (or in reading order)
     if (landIndex >= 0) {
@@ -172,9 +234,16 @@
             : 0.7 + (Math.abs(p.index - landIndex) / maxDist) * 1.2;
         p.el.style.animationDelay = `${delay}s`;
       });
+    } else if (land && land.fade) {
+      // nothing carries over: the whole phrase pops in, in reading order
+      pieces.forEach((p) => {
+        p.el.classList.add("labels-rest");
+        p.el.style.animationDelay = `${0.3 + (p.index / (wordIndex || 1)) * 1.6}s`;
+      });
     }
 
     phraseEl.replaceChildren(...pieces.map((p) => p.el));
+    layoutEl.classList.toggle("labels-blank", Boolean(phrase.next));
 
     // start with the landed word exactly where the clicked word was, then glide the phrase to its place
     phraseEl.style.transition = "none";
@@ -182,7 +251,10 @@
     const landedEl = phraseEl.querySelector(".labels-landed");
     if (land && land.from && landedEl && !reduceMotion.matches) {
       const to = landedEl.getBoundingClientRect();
-      const dx = land.from.left - to.left;
+      // typed answers sit centered in the box, so line up centers instead of left edges
+      const dx = land.center
+        ? land.from.left + land.from.width / 2 - (to.left + to.width / 2)
+        : land.from.left - to.left;
       const dy = land.from.top + land.from.height / 2 - (to.top + to.height / 2);
       phraseEl.style.transform = `translate(${dx}px, ${dy}px)`;
       phraseEl.getBoundingClientRect();
@@ -200,6 +272,13 @@
       }
     }
   }
+
+  // on a blank phrase, a click anywhere (except the footer buttons) moves on
+  document.addEventListener("click", (event) => {
+    const phrase = byId.get(currentId());
+    if (!phrase.next || event.target.closest(".page-footer")) return;
+    fadeTo(phrase.next);
+  });
 
   window.addEventListener("hashchange", render);
   render();

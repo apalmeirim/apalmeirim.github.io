@@ -127,7 +127,29 @@ body.theme-dark {
   margin: 0;
   text-align: center;
   line-height: 1.7;
+  white-space: pre-line;
   transition: transform 1.1s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.labels-blank {
+  cursor: pointer;
+}
+
+.labels-ask {
+  margin-top: 1rem;
+}
+
+.labels-input {
+  width: 14ch;
+  padding: 0.1rem 0;
+  border: none;
+  background: transparent;
+  cursor: text;
+  color: inherit;
+  font: inherit;
+  font-size: 1rem;
+  text-align: center;
+  outline: none;
 }
 
 .labels-layout {

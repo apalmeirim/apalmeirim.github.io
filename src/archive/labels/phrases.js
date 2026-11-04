@@ -5,6 +5,11 @@
 // lands: the word in the opened phrase that shows first on arrival, before the rest pops in (defaults to the same word).
 // reveal: "order" makes the rest of the phrase appear word by word in reading order, instead of spreading out from the landed word.
 // n / landsN are optional: which occurrence of word / lands, when it appears more than once (default 1).
+// ask: { to: id } shows a text box under the phrase; what the reader types opens phrase id,
+//      where {answer} in its text is replaced by what they typed (and can be used as a word like any other).
+// all: id makes every word of the phrase open phrase id, and the screen just changes (nothing carries over).
+// next: id (on a phrase with text "") makes a blank screen; a click anywhere opens phrase id.
+// write paragraphs with backticks (`...`) and leave a blank line between them.
 
 const PHRASES = [
   {
@@ -46,19 +51,69 @@ const PHRASES = [
   },
   {
     id: 8,
-    text: "a place to spend my time making it all make sense. everything perfectly labeled. think outside the box. welcome back? maybe? see you later, alligator.",
-    from: [
-      { phrase: 7, word: "time", lands: "time" },
-      { phrase: 7, word: "time", n: 2, lands: "time" },
-      { phrase: 2, word: "think", lands: "think" },
-    ],
-    to: [{ word: "labeled", phrase: 1, lands: "labels" }],
+    text: "sense?",
+  },
+  {
+    id: 12,
+    text: "nonsense.",
+    from: [{ phrase: 8, word: "sense", lands: "nonsense" }],
+  },
+  {
+    id: 13,
+    text: "none of it does. it's not supposed to.",
+    from: [{ phrase: 12, word: "nonsense", lands: "none" }],
+  },
+  {
+    id: 15,
+    text: `labels don't replace the "why?" don't try.`,
+    from: [{ phrase: 13, word: "does", lands: "don't" }],
+    to: [{ word: "labels", phrase: 1, lands: "labels" }],
+  },
+  {
+    id: 16,
+    text: "this is based on personal experience, so try this at home.",
+    from: [{ phrase: 15, word: "try", lands: "try" }],
+  },
+  {
+    id: 17,
+    text: "can you describe home?",
+    from: [{ phrase: 16, word: "home", lands: "home" }],
+    ask: { to: 14 },
+  },
+  {
+    id: 14,
+    text: "do you know why you chose {answer}?",
+    to: [{ word: "{answer}", phrase: 18, lands: "{answer}" }],
+  },
+  {
+    id: 18,
+    text: `for me, it's "belonging", for you it's {answer}. for the next it could be something similar, but always different. labels introduce a place that feels familiar but is no different, questions create reason, a sensation rather than just definition.`,
+  },
+  {
+    id: 19,
+    text: "curiosity creates action.",
+    from: [{ phrase: 18, word: "create", lands: "creates" }],
+    all: 20,
+  },
+  {
+    id: 20,
+    text: "",
+    next: 21,
+  },
+  {
+    id: 21,
+    text: "the obvious is boring, the unknown is challenging, conforming is easy.",
+  },
+  {
+    id: 22,
+    text: "easy enough to say and do, but not question.",
+    from: [{ phrase: 21, word: "easy", lands: "easy" }],
   },
   {
     id: 9,
     text: "never gonna give you up",
     reveal: "order",
-    from: [{ phrase: 8, word: "you", lands: "you" }],
+    from: [{ phrase: 17, word: "you", lands: "you" }],
     to: [{ word: "you", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" }],
   },
   {
