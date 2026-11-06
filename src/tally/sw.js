@@ -1,6 +1,6 @@
 // Offline support: serve from cache, refresh cache in the background.
 // Bump VERSION when you change the app files.
-const VERSION = "tally-v3";
+const VERSION = "tally-v4";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", (e) => {
