@@ -46,26 +46,25 @@
         cursor: pointer;
       }
 
+      button { touch-action: manipulation; } /* no double-tap zoom when tapping fast */
+
+      /* numbers only, two per row; an odd last one sits centred */
       #list {
-        width: 100%;
+        width: min(100%, 320px);
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
       }
       body.empty #list { display: none; }
       .box {
-        width: min(100%, 220px);
-        padding: 12px;
+        width: calc(50% - 4px);
+        padding: 14px 4px;
         text-align: center;
-      }
-      .name { display: block; font-size: 0.8rem; overflow-wrap: anywhere; }
-      .count {
-        display: block;
         font-size: 3.4rem;
         line-height: 1.1;
-        margin-top: 2px;
         font-variant-numeric: tabular-nums;
+        overflow-wrap: anywhere;
       }
 
       .plus {
@@ -131,9 +130,29 @@
       }
       .stack button.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
       .stack button.danger { color: var(--danger); }
-      #editDialog { width: fit-content; padding: 12px; }
-      #editDialog .stack { grid-template-columns: 64px 64px; }
-      #editDialog .stack button { height: 64px; padding: 0; font-size: 2rem; line-height: 1; }
+      /* square popup, sharp corners, plain text controls */
+      #editDialog, #zeroDialog { border-radius: 0; }
+      #editDialog { width: min(72vw, 260px); aspect-ratio: 1; padding: 14px; text-align: center; }
+      #editDialog[open] { display: flex; flex-direction: column; }
+      #editName { font-size: 0.9rem; color: var(--muted); overflow-wrap: anywhere; }
+      #editCount {
+        flex: 1;
+        width: 100%;
+        font-size: 3.4rem;
+        line-height: 1.1;
+        font-variant-numeric: tabular-nums;
+        overflow-wrap: anywhere;
+      }
+      .edit-row { display: flex; justify-content: space-around; }
+      .edit-row button { width: 64px; height: 56px; font-size: 2rem; line-height: 1; color: var(--muted); }
+
+      #zeroDialog { width: min(60vw, 200px); padding: 6px; }
+      .choices { display: grid; }
+      .choices[hidden] { display: none; }
+      .choices button { padding: 14px; }
+      #deleteBtn, #yesBtn.danger { color: var(--danger); }
+      #cancelBtn, #noBtn { color: var(--muted); }
+      #confirmText { padding: 14px 8px 6px; font-size: 0.9rem; color: var(--muted); text-align: center; overflow-wrap: anywhere; }
     </style>
   </head>
   <body>
@@ -141,12 +160,29 @@
     <button class="plus" id="plus" aria-label="Add">+</button>
     <input class="newbox" id="newbox" maxlength="80" enterkeyhint="done" hidden autocomplete="off" />
 
-    <!-- long-press a box -->
+    <!-- tap a number; tap the big number to add, − to subtract, 0 for reset/delete; tap outside to close -->
     <dialog id="editDialog">
-      <form method="dialog" class="stack">
-        <button value="minus" aria-label="Subtract one">−</button>
-        <button value="delete" class="danger" aria-label="Remove">×</button>
-      </form>
+      <div id="editName"></div>
+      <button id="editCount" aria-label="Add one"></button>
+      <div class="edit-row">
+        <button id="zeroBtn" aria-label="Reset or delete">0</button>
+        <button id="minusBtn" aria-label="Subtract one">−</button>
+      </div>
+    </dialog>
+
+    <!-- tap the 0 -->
+    <dialog id="zeroDialog">
+      <div class="choices" id="choiceView">
+        <button id="resetBtn">reset</button>
+        <button id="deleteBtn">delete</button>
+        <button id="cancelBtn">cancel</button>
+      </div>
+      <!-- after picking reset or delete -->
+      <div class="choices" id="confirmView" hidden>
+        <div id="confirmText"></div>
+        <button id="yesBtn">yes</button>
+        <button id="noBtn">no</button>
+      </div>
     </dialog>
 
     <!-- long-press the + -->
@@ -212,23 +248,9 @@
         for (const item of items) {
           const box = document.createElement("button");
           box.className = "box";
-          const name = document.createElement("span");
-          name.className = "name";
-          name.textContent = item.name;
-          const count = document.createElement("span");
-          count.className = "count";
-          count.textContent = item.count;
-          box.append(name, count);
-
-          box.addEventListener("click", () => {
-            item.count++;
-            item.log.push(Date.now());
-            save();
-            count.textContent = item.count;
-            if (navigator.vibrate) navigator.vibrate(10);
-          });
-          onLongPress(box, () => openEdit(item));
-
+          box.textContent = item.count;
+          box.setAttribute("aria-label", `${item.name}: ${item.count}`);
+          box.addEventListener("click", () => openEdit(item));
           list.append(box);
         }
       }
@@ -260,28 +282,79 @@
         closeNew();
       });
 
+      // popup for one tally: tap the number to add, − to subtract
       let editing = null;
       function openEdit(item) {
         editing = item;
+        $("editName").textContent = item.name;
+        $("editCount").textContent = item.count;
         $("editDialog").showModal();
+        document.activeElement.blur(); // no focus ring on the first button
       }
-      $("editDialog").onclose = () => {
-        const action = $("editDialog").returnValue;
-        $("editDialog").returnValue = "";
+      function change(delta) {
         if (!editing) return;
-        if (action === "minus") {
-          editing.count = Math.max(0, editing.count - 1);
+        if (delta > 0) {
+          editing.count++;
+          editing.log.push(Date.now());
+        } else if (editing.count > 0) {
+          editing.count--;
           editing.log.pop();
-        } else if (action === "delete") {
-          if (confirm(`Remove "${editing.name}"?`)) items = items.filter((i) => i !== editing);
         }
-        editing = null;
         save();
+        $("editCount").textContent = editing.count;
+        if (navigator.vibrate) navigator.vibrate(10);
+      }
+      $("editCount").onclick = () => change(1);
+      $("minusBtn").onclick = () => change(-1);
+
+      // 0 asks: reset, delete or cancel; reset and delete then ask yes / no
+      let pending = null;
+      $("zeroBtn").onclick = () => {
+        pending = null;
+        $("choiceView").hidden = false;
+        $("confirmView").hidden = true;
+        $("zeroDialog").showModal();
+        document.activeElement.blur();
+      };
+      function ask(action) {
+        if (!editing) return;
+        pending = action;
+        $("confirmText").textContent = `${action} "${editing.name}"?`;
+        $("yesBtn").classList.toggle("danger", action === "delete");
+        $("choiceView").hidden = true;
+        $("confirmView").hidden = false;
+        document.activeElement.blur();
+      }
+      $("resetBtn").onclick = () => ask("reset");
+      $("deleteBtn").onclick = () => ask("delete");
+      $("cancelBtn").onclick = () => $("zeroDialog").close();
+      $("noBtn").onclick = () => $("zeroDialog").close();
+      $("yesBtn").onclick = () => {
+        if (editing && pending === "reset") {
+          editing.count = 0;
+          editing.log = [];
+          save();
+          $("editCount").textContent = 0;
+          $("zeroDialog").close();
+        } else if (editing && pending === "delete") {
+          items = items.filter((i) => i !== editing);
+          save();
+          $("zeroDialog").close();
+          $("editDialog").close();
+        }
+      };
+      $("editDialog").onclose = () => {
+        editing = null;
         render();
       };
       // tapping outside a dialog closes it
-      for (const d of [$("editDialog"), $("menuDialog")]) {
-        d.addEventListener("click", (e) => { if (e.target === d) d.close(); });
+      for (const d of [$("editDialog"), $("zeroDialog"), $("menuDialog")]) {
+        d.addEventListener("click", (e) => {
+          if (e.target !== d) return;
+          const r = d.getBoundingClientRect();
+          const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+          if (!inside) d.close();
+        });
       }
 
       $("closeMenu").onclick = () => $("menuDialog").close();
